@@ -34,13 +34,13 @@ public class Player : MonoBehaviour
             spriteRenderer.flipX = x < 0;
         }
         
-        // test death with K
+        // Test death with K
         if (Input.GetKeyDown(KeyCode.K))
         {
             Die();
         }
 
-        // test revive with R
+        // Test revive with R
         if (Input.GetKeyDown(KeyCode.R))
         {
             Revive();
