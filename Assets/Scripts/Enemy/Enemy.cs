@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     Animator animator;
     SpriteRenderer spriteRenderer;
     
-    void Awake()
+    void Start()
     {
         animator = graphics.GetComponent<Animator>();
         spriteRenderer = graphics.GetComponent<SpriteRenderer>();
