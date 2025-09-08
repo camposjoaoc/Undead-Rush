@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         //If dead, do nothing
-        if (animator != null && animator.GetBool("IsDead")) return; 
+        if (animator != null && animator.GetBool("isDead")) return; 
         
         // move towards player
         if (player == null) return;
@@ -52,6 +52,7 @@ public class Enemy : MonoBehaviour
         }
         
         // Call this method to simulate the enemy being hit
+       /*
         void Hit()
         {
             if (animator != null)
@@ -59,5 +60,6 @@ public class Enemy : MonoBehaviour
                 animator.SetTrigger("Hit");
             }
         }
+        */
     }
 }
