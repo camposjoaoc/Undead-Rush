@@ -10,6 +10,10 @@ public class Enemy : MonoBehaviour
     [Header("Enemy Stats")]
     [SerializeField] private int maxHealth = 3;        // Vida máxima
     private int currentHealth;
+    
+    [SerializeField] private int damage = 1;       // quanto de dano o inimigo dá
+    [SerializeField] private float attackCooldown = 1.0f; // tempo entre ataques
+    private float lastAttackTime = 0f;
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -55,6 +59,16 @@ public class Enemy : MonoBehaviour
             {
                 spriteRenderer.flipX = direction.x < 0;
             }
+        }
+    }
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Player player = collision.GetComponent<Player>();
+        if (player != null && Time.time >= lastAttackTime + attackCooldown)
+        {
+            player.TakeDamage(damage);
+            lastAttackTime = Time.time;
         }
     }
 
