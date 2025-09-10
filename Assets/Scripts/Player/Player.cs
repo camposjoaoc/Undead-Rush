@@ -2,11 +2,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 3f;
     [SerializeField] Transform playerModel;
-    [SerializeField] int maxHealth = 5;
 
-    private int currentHealth;
+    [SerializeField] private Transform HandRight;
+    [SerializeField] private Transform HandLeft;
+    [SerializeField] private GameObject startingWeaponPrefab;
+
+    [SerializeField] float moveSpeed = 3f;
+    [SerializeField] float maxHealth = 5.0f;
+    private float currentHealth;
+
+    private Weapon currentWeapon;
+
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
@@ -17,29 +24,69 @@ public class Player : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    private void Start()
+    {
+        // instancia a arma inicial na mão direita
+        GameObject weaponInstance = Instantiate(startingWeaponPrefab, HandRight);
+        currentWeapon = weaponInstance.GetComponent<Weapon>();
+        currentWeapon.transform.localPosition = Vector3.zero;
+    }
+
     void Update()
     {
-        // old Input system (WASD / arrow keys)
+        // movimento com WASD
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
-
-        // movement vector
         Vector3 movement = new Vector3(x, y, 0f);
         transform.position += movement.normalized * (moveSpeed * Time.deltaTime);
 
-        // update Idle/Run animations
+        // animação de idle/run
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
 
-        // flip sprite left/right
-        if (Mathf.Abs(x) > 0.01f)
+        // posição do mouse em coordenadas de mundo
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0;
+
+        // flip do sprite baseado na posição do mouse (não no movimento)
+        bool lookingLeft = mousePos.x < transform.position.x;
+        spriteRenderer.flipX = lookingLeft;
+
+        if (currentWeapon != null)
         {
-            spriteRenderer.flipX = x < 0;
+            if (lookingLeft)
+            {
+                // Player olhando pra esquerda → arma na mão esquerda
+                currentWeapon.transform.SetParent(HandLeft, false);
+                currentWeapon.transform.localPosition = Vector3.zero;
+
+                // espelha a arma
+                Vector3 scale = currentWeapon.transform.localScale;
+                scale.x = -Mathf.Abs(scale.x);
+                currentWeapon.transform.localScale = scale;
+            }
+            else
+            {
+                // Player olhando pra direita → arma na mão direita
+                currentWeapon.transform.SetParent(HandRight, false);
+                currentWeapon.transform.localPosition = Vector3.zero;
+
+                // arma normal
+                Vector3 scale = currentWeapon.transform.localScale;
+                scale.x = Mathf.Abs(scale.x);
+                currentWeapon.transform.localScale = scale;
+            }
         }
-        
-        // Debug test
-        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(1); // perde 1 de vida
-        if (Input.GetKeyDown(KeyCode.R)) Revive();      // revive
+
+        // tiro
+        if (Input.GetMouseButtonDown(0) && currentWeapon != null)
+        {
+            currentWeapon.Shoot(mousePos);
+        }
+
+        // debug vida
+        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(1);
+        if (Input.GetKeyDown(KeyCode.R)) Revive();
     }
 
     public void TakeDamage(int amount)
@@ -55,14 +102,14 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        animator.SetBool("IsDead", true); // switch to Dead state
+        animator.SetBool("IsDead", true);
         Debug.Log("Player morreu!");
     }
 
     public void Revive()
     {
         currentHealth = maxHealth;
-        animator.SetBool("IsDead", false); // return to Idle
+        animator.SetBool("IsDead", false);
         Debug.Log("Player reviveu!");
     }
 }

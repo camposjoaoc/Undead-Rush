@@ -2,30 +2,46 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Enemy that follows the player
-    [SerializeField] Transform player;
-    [SerializeField] private Transform graphics;
-    
-    [SerializeField] float speed = 3f; // Enemy movement speed (less than player speed)
-    [SerializeField] float stopRadius = 0.1f; // Distance to stop from player (avoid overlap)
-    
-    Animator animator;
-    SpriteRenderer spriteRenderer;
-    
+    [SerializeField] private Transform player;         // Ref to the player
+    [SerializeField] private Transform graphics;       // Sprite/animator for the enemy
+    [SerializeField] private float speed = 3f;         // Movement speed
+    [SerializeField] private float stopRadius = 0.1f;  // Distance to stop from the player
+
+    [Header("Enemy Stats")]
+    [SerializeField] private int maxHealth = 3;        // Vida máxima
+    private int currentHealth;
+
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
+
     void Start()
     {
         animator = graphics.GetComponent<Animator>();
         spriteRenderer = graphics.GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth; // começa com vida cheia
+
+        // Procura o player se não foi atribuído
+        if (player == null)
+        {
+            Player playerRef = GameObject.FindAnyObjectByType<Player>();
+            if (playerRef != null)
+            {
+                player = playerRef.transform;
+                Debug.Log("Enemy found player: " + player.name);
+            }
+            else
+            {
+                Debug.LogWarning("No Player found in scene!");
+            }
+        }
     }
+
     void Update()
     {
-        //If dead, do nothing
-        if (animator != null && animator.GetBool("isDead")) return; 
-        
-        // move towards player
         if (player == null) return;
+        if (animator != null && animator.GetBool("isDead")) return;
 
-        // direction vector from enemy to player
+        // Move towards the player
         Vector3 toPlayer = player.position - transform.position;
         float distance = toPlayer.magnitude;
 
@@ -33,33 +49,46 @@ public class Enemy : MonoBehaviour
         {
             Vector3 direction = toPlayer.normalized;
             transform.position += direction * (speed * Time.deltaTime);
-            
-            // update Idle/Run animations
+
+            // flip no sprite
             if (Mathf.Abs(direction.x) > 0.01f)
             {
                 spriteRenderer.flipX = direction.x < 0;
             }
         }
+    }
 
-        // update Run/Dead animations
-        void Die()
+    public void TakeDamage(int amount)
+    {
+        if (currentHealth <= 0) return;
+
+        currentHealth -= amount;
+        Debug.Log($"Enemy took {amount} damage. Current health: {currentHealth}");
+
+        if (currentHealth <= 0)
         {
-            if (animator != null)
-            {
-                animator.SetBool("isDead", true); // switch to Dead state
-                Destroy(gameObject, 1.5f); // destroy enemy after delay
-            }
+            Die();
         }
-        
-        // Call this method to simulate the enemy being hit
-       /*
-        void Hit()
+        else
         {
+            // toca animação de "hit" se existir
             if (animator != null)
             {
                 animator.SetTrigger("Hit");
             }
         }
-        */
+    }
+
+    public void Die()
+    {
+        if (animator != null)
+        {
+            animator.SetBool("isDead", true);
+            Destroy(gameObject, 1f); // espera animação de morte
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }

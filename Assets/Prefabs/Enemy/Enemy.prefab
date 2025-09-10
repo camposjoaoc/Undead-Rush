@@ -141,7 +141,7 @@ Transform:
   m_GameObject: {fileID: 4753276897432549337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.69913, y: 0.00687, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -162,8 +162,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   player: {fileID: 0}
   graphics: {fileID: 1844189627096648714}
-  speed: 2.5
+  speed: 2.8
   stopRadius: 0.1
+  maxHealth: 3
 --- !u!50 &-2571148767658997712
 Rigidbody2D:
   serializedVersion: 5
