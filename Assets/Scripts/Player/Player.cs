@@ -102,14 +102,15 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
-        animator.SetBool("IsDead", true);
+        Destroy(gameObject);
+        animator.SetBool("isDead", true);
         Debug.Log("Player morreu!");
     }
 
     public void Revive()
     {
         currentHealth = maxHealth;
-        animator.SetBool("IsDead", false);
+        animator.SetBool("isDead", false);
         Debug.Log("Player reviveu!");
-    }
+    } 
 }
