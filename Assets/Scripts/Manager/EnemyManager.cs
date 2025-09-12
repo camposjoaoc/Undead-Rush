@@ -1,48 +1,158 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab; // Prefab do inimigo
-    [SerializeField] private int maxEnemies = 300; // Quantos inimigos no total
-    [SerializeField] private float spawnInterval = 2f; // Intervalo entre spawns
-    [SerializeField] private Vector2 spawnRangeX = new(-10f, 10f); 
-    [SerializeField] private Vector2 spawnRangeY = new(-5f, 5f); 
+    public static EnemyManager Instance; //Singleton simples para registro de kills
 
-    private List<GameObject> enemies = new List<GameObject>();
+    [Header("Spawn Settings")] [SerializeField]
+    private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
+
+    [SerializeField] private float spawnInterval = 2f; //Intervalo de spawn em segundos
+    [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
+
+    private List<Enemy> activeEnemies = new List<Enemy>(); //Lista de inimigos ativos
+    private Transform player;
     private float timer;
+    private int killCount = 0;
 
-    private void Start()
+    void Awake()
     {
-        timer = spawnInterval;
+        //Define Singleton
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    private void Update()
+    void Start()
     {
-        // Atualiza o timer
-        timer -= Time.deltaTime;
+        //Busca o player na cena
+        Player playerRef = FindAnyObjectByType<Player>();
+        if (playerRef != null)
+        {
+            player = playerRef.transform;
+        }
+        else
+        {
+            Debug.LogWarning("EnemyManager: Player not found in scene!");
+        }
+    }
 
-        // Se já passou o tempo e ainda não chegou no limite
-        if (timer <= 0 && enemies.Count < maxEnemies)
+
+    void Update()
+    {
+        //Atualiza inimigos e controla spawn
+        UpdateEnemies();
+        HandleSpawning();
+    }
+
+    /// <summary>
+    /// Atualiza todos os inimigos ativos e remove os mortos.
+    /// </summary>
+    public void UpdateEnemies()
+    {
+        // Percorre a lista de inimigos de trás pra frente para permitir remoção segura
+        for (int i = activeEnemies.Count - 1; i >= 0; i--)
+        {
+            // Pega o inimigo atual
+            Enemy enemy = activeEnemies[i];
+
+            // Verifica se o inimigo ainda está vivo
+            if (enemy != null && enemy.IsAlive())
+            {
+                enemy.UpdateEnemy(); //Atualiza o movimento/flip pro Enemy
+            }
+            else if (enemy != null && !enemy.IsAlive())
+            {
+                // remove da lista e conta kill
+                activeEnemies.RemoveAt(i);
+                RegisterKill();
+            }
+            else
+            {
+                // Inimigo foi destruído de outra forma, remove da lista
+                activeEnemies.RemoveAt(i);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Controla o tempo entre spawns.
+    /// </summary>
+    public void HandleSpawning()
+    {
+        timer -= Time.deltaTime;
+        if (timer <= 0f)
         {
             SpawnEnemy();
             timer = spawnInterval;
         }
-
-        // Remove referências de inimigos destruídos
-        enemies.RemoveAll(enemy => enemy == null);
     }
 
-    private void SpawnEnemy()
+    /// <summary>
+    /// Spawn de um inimigo novo.
+    /// </summary>
+    public void SpawnEnemy()
     {
-        Vector3 randomPos = new Vector3(
-            Random.Range(spawnRangeX.x, spawnRangeX.y),
-            Random.Range(spawnRangeY.x, spawnRangeY.y), // Usando Y (2D)
-            0
-        );
+        if (player == null) return;
 
-        GameObject newEnemy = Instantiate(enemyPrefab, randomPos, Quaternion.identity);
-        enemies.Add(newEnemy);
+        //Calcula posição de spawn aleatória em volta do player
+        Vector2 spawnPos = (Vector2)player.position + UnityEngine.Random.insideUnitCircle.normalized * spawnRadius;
+
+        GameObject prefab = ChooseEnemyPrefab();
+        GameObject enemyObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+
+        Enemy enemy = enemyObj.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.Initialize(player); //Inicializa o inimigo com referência ao player
+            activeEnemies.Add(enemy); //Adiciona à lista de inimigos ativos
+        }
+        else
+        {
+            Debug.LogWarning("EnemyManager: Spawned object does not have an Enemy component!");
+        }
+    }
+
+    /// <summary>
+    /// Escolhe qual prefab spawnar baseado em kills.
+    /// </summary>
+    GameObject ChooseEnemyPrefab()
+    {
+        if (killCount < 20)
+        {
+            return enemyPrefabs[0];
+        }
+        else if (killCount < 30)
+        {
+            return enemyPrefabs[UnityEngine.Random.Range(0, 2)];
+        }
+
+        else
+        {
+            return enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
+        }
+    }
+
+    /// <summary>
+    /// Conta um kill e pode acelerar dificuldade.
+    /// </summary>
+    public void RegisterKill()
+    {
+        killCount++;
+        Debug.Log("EnemyManager: Total Kills = " + killCount);
+
+        // Exemplo: acelera spawn a cada 20 kills
+        if (killCount % 25 == 0 && spawnInterval > 0.5f)
+        {
+            spawnInterval -= 0.2f;
+            Debug.Log("Spawn interval acelerated: " + spawnInterval);
+        }
     }
 }

@@ -1,108 +1,90 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private Transform player;         // Ref to the player
-    [SerializeField] private Transform graphics;       // Sprite/animator for the enemy
-    [SerializeField] private float speed = 3f;         // Movement speed
-    [SerializeField] private float stopRadius = 0.1f;  // Distance to stop from the player
+    [Header("Stats")] [SerializeField] private float moveSpeed = 3f; // Velocidade de movimento do inimigo
+    [SerializeField] private float maxHealth = 3f; // Vida máxima do inimigo
 
-    [Header("Enemy Stats")]
-    [SerializeField] private int maxHealth = 3;        // Vida máxima
-    private int currentHealth;
-    
-    [SerializeField] private int damage = 1;       // quanto de dano o inimigo dá
-    [SerializeField] private float attackCooldown = 1.0f; // tempo entre ataques
-    private float lastAttackTime = 0f;
+    private float currentHealth; // Vida atual (decresce ao tomar dano)
+    private Transform playerTarget; // Referência ao Player (passada pelo Manager)
+    private Animator animator; // Controla animações (Idle, Run, Hit, Dead)
+    private SpriteRenderer spriteRenderer; // Responsável por flipar o sprite esquerda/direita
 
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
+    private float attackCooldown = 1f; // Tempo entre ataques
+    private float lastAttackTime = 0f; // Tempo do último ataque
 
-    void Start()
+    /// <summary>
+    /// Inicializa o inimigo quando for spawnado pelo EnemyManager.
+    /// </summary>
+    public void Initialize(Transform target)
     {
-        animator = graphics.GetComponent<Animator>();
-        spriteRenderer = graphics.GetComponent<SpriteRenderer>();
-        currentHealth = maxHealth; // começa com vida cheia
+        playerTarget = target;
+        currentHealth = maxHealth;
 
-        // Procura o player se não foi atribuído
-        if (player == null)
+        // Busca os componentes gráficos no filho
+        animator = GetComponentInChildren<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+    }
+
+    /// <summary>
+    /// Atualiza o movimento do inimigo (chamado pelo Manager a cada frame).
+    /// </summary>
+    public void UpdateEnemy()
+    {
+        if (!IsAlive() || playerTarget == null)
+            return;
+
+        // Calcula direção até o player
+        Vector3 toPlayer = (playerTarget.position - transform.position).normalized;
+        transform.position += toPlayer * moveSpeed * Time.deltaTime;
+
+        // Animação Run/Idle + flip horizontal
+        if (Mathf.Abs(toPlayer.x) > 0.01f)
         {
-            Player playerRef = GameObject.FindAnyObjectByType<Player>();
-            if (playerRef != null)
-            {
-                player = playerRef.transform;
-                Debug.Log("Enemy found player: " + player.name);
-            }
-            else
-            {
-                Debug.LogWarning("No Player found in scene!");
-            }
+            spriteRenderer.flipX = toPlayer.x < 0;
         }
     }
 
-    void Update()
+    /// <summary>
+    /// Aplica dano no inimigo e verifica se morreu.
+    /// </summary>
+    public void TakeDamage(float someDamage)
     {
-        if (player == null) return;
-        if (animator != null && animator.GetBool("isDead")) return;
+        if (!IsAlive()) return;
 
-        // Move towards the player
-        Vector3 toPlayer = player.position - transform.position;
-        float distance = toPlayer.magnitude;
-
-        if (distance > stopRadius)
-        {
-            Vector3 direction = toPlayer.normalized;
-            transform.position += direction * (speed * Time.deltaTime);
-
-            // flip no sprite
-            if (Mathf.Abs(direction.x) > 0.01f)
-            {
-                spriteRenderer.flipX = direction.x < 0;
-            }
-        }
-    }
-    
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Player player = collision.GetComponent<Player>();
-        if (player != null && Time.time >= lastAttackTime + attackCooldown)
-        {
-            player.TakeDamage(damage);
-            lastAttackTime = Time.time;
-        }
-    }
-
-    public void TakeDamage(int amount)
-    {
-        if (currentHealth <= 0) return;
-
-        currentHealth -= amount;
-        Debug.Log($"Enemy took {amount} damage. Current health: {currentHealth}");
+        currentHealth -= someDamage;
 
         if (currentHealth <= 0)
         {
-            Die();
+            // Troca para animação de morte
+            animator?.SetBool("isDead", true);
+            Destroy(gameObject, 1.1f);
         }
         else
         {
-            // toca animação de "hit" se existir
-            if (animator != null)
-            {
-                animator.SetTrigger("Hit");
-            }
+            // Animação de impacto quando leva dano
+            animator?.SetTrigger("Hit");
         }
     }
 
-    public void Die()
+    /// <summary>
+    /// Retorna true se o inimigo ainda está vivo.
+    /// </summary>
+    public bool IsAlive() => currentHealth > 0;
+
+    /// <summary>
+    /// Detecta colisão com o Player para causar dano.
+    /// </summary>
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (animator != null)
+        if (!IsAlive()) return;
+
+        Player player = collision.GetComponent<Player>();
+        if (player != null && Time.time > lastAttackTime + attackCooldown)
         {
-            animator.SetBool("isDead", true);
-            Destroy(gameObject, 1f); // espera animação de morte
-        }
-        else
-        {
-            Destroy(gameObject);
+            player.TakeDamage(1); // Aplica dano no player
+            lastAttackTime = Time.time;
         }
     }
 }

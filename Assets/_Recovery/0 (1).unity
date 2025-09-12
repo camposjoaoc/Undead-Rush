@@ -8471,9 +8471,6 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 4753276897432549337, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
   - {fileID: 189959231264171307, guid: b7202bfcfcce625488e9c8beabd23885, type: 3}
-  - {fileID: 1515235748536967951, guid: 19d8ef111e10f4641b0933348b60423d, type: 3}
-  - {fileID: 5469939470647255751, guid: e9843c41d9382824d92ff835c909ef64, type: 3}
-  - {fileID: 1459324071030649799, guid: 4531c40e51c9ca843879128af2706641, type: 3}
   spawnInterval: 1
   spawnRadius: 8
 --- !u!4 &205321936
@@ -8485,7 +8482,7 @@ Transform:
   m_GameObject: {fileID: 205321934}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.05123, y: 0.45097, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -37689,7 +37686,7 @@ Transform:
   m_GameObject: {fileID: 619394800}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.18, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100177,7 +100174,7 @@ PrefabInstance:
       objectReference: {fileID: 3961408094643465769}
     - target: {fileID: 1983385170015126272, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
       propertyPath: moveSpeed
-      value: 3
+      value: 3.1
       objectReference: {fileID: 0}
     - target: {fileID: 1983385170015126272, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
       propertyPath: startingWeaponPrefab
@@ -100225,7 +100222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6454250062494965133, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.08
+      value: -0.02
       objectReference: {fileID: 0}
     - target: {fileID: 7448969594808480638, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
       propertyPath: m_Name

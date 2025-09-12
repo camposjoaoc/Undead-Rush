@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject startingWeaponPrefab;
 
     [SerializeField] float moveSpeed = 3f;
-    [SerializeField] float maxHealth = 5.0f;
+    [SerializeField] float maxHealth = 5f;
     private float currentHealth;
 
     private Weapon currentWeapon;
@@ -43,39 +43,38 @@ public class Player : MonoBehaviour
         // animação de idle/run
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
-
-        // posição do mouse em coordenadas de mundo
+// posição do mouse
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
-        // flip do sprite baseado na posição do mouse (não no movimento)
-        bool lookingLeft = mousePos.x < transform.position.x;
+// direção entre player e mouse
+        Vector3 aimDir = (mousePos - transform.position).normalized;
+
+// flip do player baseado no mouse
+        bool lookingLeft = (mousePos.x < transform.position.x);
         spriteRenderer.flipX = lookingLeft;
 
+// troca de mão da arma
         if (currentWeapon != null)
         {
             if (lookingLeft)
             {
-                // Player olhando pra esquerda → arma na mão esquerda
                 currentWeapon.transform.SetParent(HandLeft, false);
                 currentWeapon.transform.localPosition = Vector3.zero;
-
-                // espelha a arma
-                Vector3 scale = currentWeapon.transform.localScale;
-                scale.x = -Mathf.Abs(scale.x);
-                currentWeapon.transform.localScale = scale;
             }
             else
             {
-                // Player olhando pra direita → arma na mão direita
                 currentWeapon.transform.SetParent(HandRight, false);
                 currentWeapon.transform.localPosition = Vector3.zero;
-
-                // arma normal
-                Vector3 scale = currentWeapon.transform.localScale;
-                scale.x = Mathf.Abs(scale.x);
-                currentWeapon.transform.localScale = scale;
             }
+
+            // rotação da arma
+            currentWeapon.transform.right = aimDir;
+
+            // corrige flip vertical da arma quando player olha pra esquerda
+            Vector3 localScale = currentWeapon.transform.localScale;
+            localScale.y = lookingLeft ? -1 : 1;
+            currentWeapon.transform.localScale = localScale;
         }
 
         // tiro
@@ -91,26 +90,26 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (currentHealth <= 0) return; // já morto
-
+        // não aplica dano se já estiver morto
+        if (currentHealth <= 0) return;
         currentHealth -= amount;
+
         if (currentHealth <= 0)
         {
-            Die();
+            Dead();
         }
     }
 
-    public void Die()
+    public void Dead()
     {
-        Destroy(gameObject);
-        animator.SetBool("isDead", true);
+        animator.SetBool("IsDead", true);
         Debug.Log("Player morreu!");
     }
 
     public void Revive()
     {
         currentHealth = maxHealth;
-        animator.SetBool("isDead", false);
+        animator.SetBool("IsDead", false);
         Debug.Log("Player reviveu!");
-    } 
+    }
 }
