@@ -7,9 +7,9 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(Vector3 aVelocity, float aSpeed)
     {
-        Destroy(gameObject, 5.0f);          // destrói projétil depois de 5s
-        transform.up = aVelocity;           // orienta o sprite na direção
-        velocity = aVelocity * aSpeed;      // define a velocidade
+        Destroy(gameObject, 5.0f); // destrói projétil depois de 5s
+        transform.up = aVelocity; // orienta o sprite na direção
+        velocity = aVelocity * aSpeed; // define a velocidade
     }
 
     private void Update()
@@ -23,8 +23,8 @@ public class Projectile : MonoBehaviour
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.TakeDamage(1);            // causa dano no inimigo
-            Destroy(gameObject);             // destrói o projétil
+            enemy.TakeDamage(1); // causa dano no inimigo
+            Destroy(gameObject); // destrói o projétil
         }
     }
 }

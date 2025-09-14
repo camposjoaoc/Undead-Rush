@@ -9,14 +9,17 @@ public class EnemyManager : MonoBehaviour
     [Header("Spawn Settings")] [SerializeField]
     private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
 
+    [SerializeField] private KillCounterUI killUI;  //Referência à UI de kills
+    
     [SerializeField] private float spawnInterval = 2f; //Intervalo de spawn em segundos
     [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
-
+    [SerializeField] private int killCount = 0; //Contador de kills
+    public int KillCount => killCount; //Propriedade pública para acessar kills
+    
     private List<Enemy> activeEnemies = new List<Enemy>(); //Lista de inimigos ativos
     private Transform player;
     private float timer;
-    private int killCount = 0;
-
+   
     void Awake()
     {
         //Define Singleton
@@ -148,7 +151,13 @@ public class EnemyManager : MonoBehaviour
         killCount++;
         Debug.Log("EnemyManager: Total Kills = " + killCount);
 
-        // Exemplo: acelera spawn a cada 20 kills
+        // Atualiza HUD
+        if (killUI != null)
+        {
+            killUI.UpdateKillCount(killCount);
+        }
+        
+        // Acelera spawn a cada 20 kills
         if (killCount % 25 == 0 && spawnInterval > 0.5f)
         {
             spawnInterval -= 0.2f;

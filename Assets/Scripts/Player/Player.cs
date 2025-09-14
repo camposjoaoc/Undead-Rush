@@ -10,6 +10,9 @@ public class Player : MonoBehaviour
 
     [SerializeField] float moveSpeed = 3f;
     [SerializeField] float maxHealth = 5f;
+    
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
     private float currentHealth;
 
     private Weapon currentWeapon;
@@ -43,18 +46,18 @@ public class Player : MonoBehaviour
         // animação de idle/run
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
-// posição do mouse
+        // posição do mouse
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
-// direção entre player e mouse
+        // direção entre player e mouse
         Vector3 aimDir = (mousePos - transform.position).normalized;
 
-// flip do player baseado no mouse
+        // flip do player baseado no mouse
         bool lookingLeft = (mousePos.x < transform.position.x);
         spriteRenderer.flipX = lookingLeft;
 
-// troca de mão da arma
+        // troca de mão da arma
         if (currentWeapon != null)
         {
             if (lookingLeft)

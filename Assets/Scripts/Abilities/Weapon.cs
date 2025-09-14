@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-   [SerializeField] private GameObject projectilePrefab; // Prefab of the projectile to shoot
-   [SerializeField] private Transform firePoint; // Point from where the projectile is fired
-   [SerializeField] private float projectileSpeed = 8f; // Speed of the projectile
+   [SerializeField] private GameObject projectilePrefab; // Prefab do projétil
+   [SerializeField] private Transform firePoint; // Ponto de onde o projétil é disparado
+   [SerializeField] private float projectileSpeed = 8f; // Velocidade do projétil
 
    public void Shoot(Vector3 targetPosition)
    {
