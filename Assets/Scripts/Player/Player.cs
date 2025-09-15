@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
         // animação de idle/run
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
+        
         // posição do mouse
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
