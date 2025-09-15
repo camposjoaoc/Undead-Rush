@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -10,13 +12,12 @@ public class Player : MonoBehaviour
 
     [SerializeField] float moveSpeed = 3f;
     [SerializeField] float maxHealth = 5f;
-    
-    public float CurrentHealth => currentHealth;
-    public float MaxHealth => maxHealth;
-    private float currentHealth;
+
+    [SerializeField] Image HealthBar;
+    [SerializeField] TextMeshProUGUI HealthText;
+    [SerializeField] float currentHealth;
 
     private Weapon currentWeapon;
-
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
@@ -37,6 +38,10 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        // atualiza barra de vida
+        HealthText.text = currentHealth.ToString("F0") + " / " + maxHealth.ToString();
+        HealthBar.fillAmount = currentHealth / maxHealth;
+        
         // movimento com WASD
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
