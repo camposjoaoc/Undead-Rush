@@ -160,13 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d529af457f3edd44b5c57039d1433d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  player: {fileID: 0}
-  graphics: {fileID: 1844189627096648714}
-  speed: 2.8
-  stopRadius: 0.1
   maxHealth: 3
-  damage: 1
-  attackCooldown: 1
+  isDead: 0
+  moveSpeed: 3
+  maxHealth: 3
 --- !u!50 &-2571148767658997712
 Rigidbody2D:
   serializedVersion: 5

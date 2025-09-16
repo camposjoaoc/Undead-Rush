@@ -8,7 +8,6 @@ public class EnemyManager : MonoBehaviour
 
     [Header("Spawn Settings")] [SerializeField]
     private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
-
     [SerializeField] private KillCounterUI killUI;  //Referência à UI de kills
     
     [SerializeField] private float spawnInterval = 2f; //Intervalo de spawn em segundos
@@ -66,20 +65,17 @@ public class EnemyManager : MonoBehaviour
             // Pega o inimigo atual
             Enemy enemy = activeEnemies[i];
 
-            // Verifica se o inimigo ainda está vivo
-            if (enemy != null && enemy.IsAlive())
+            if (enemy != null && !enemy.isDead)   // inimigo está vivo
             {
-                enemy.UpdateEnemy(); //Atualiza o movimento/flip pro Enemy
+                enemy.UpdateEnemy();              // atualiza movimento/flip
             }
-            else if (enemy != null && !enemy.IsAlive())
+            else if (enemy != null && enemy.isDead) // inimigo morreu
             {
-                // remove da lista e conta kill
                 activeEnemies.RemoveAt(i);
                 RegisterKill();
             }
             else
             {
-                // Inimigo foi destruído de outra forma, remove da lista
                 activeEnemies.RemoveAt(i);
             }
         }

@@ -2,33 +2,33 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class Player : Damageable
 {
+    [Header("Referências")]
     [SerializeField] Transform playerModel;
-
     [SerializeField] private Transform HandRight;
     [SerializeField] private Transform HandLeft;
     [SerializeField] private GameObject startingWeaponPrefab;
 
-    [SerializeField] float moveSpeed = 3f;
-    [SerializeField] float maxHealth = 5f;
-
+    [Header("PlayerUI")]
     [SerializeField] Image HealthBar;
     [SerializeField] TextMeshProUGUI HealthText;
-    [SerializeField] float currentHealth;
+    
+    [Header("Movimento")]
+    [SerializeField] float moveSpeed = 3f;
 
     private Weapon currentWeapon;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake(); // inicializa currentHealth = maxHealth (Damageable)
         animator = playerModel.GetComponent<Animator>();
         spriteRenderer = playerModel.GetComponent<SpriteRenderer>();
-        currentHealth = maxHealth;
     }
 
-    private void Start()
+    void Start()
     {
         // instancia a arma inicial na mão direita
         GameObject weaponInstance = Instantiate(startingWeaponPrefab, HandRight);
@@ -41,7 +41,7 @@ public class Player : MonoBehaviour
         // atualiza barra de vida
         HealthText.text = currentHealth.ToString("F0") + " / " + maxHealth.ToString();
         HealthBar.fillAmount = currentHealth / maxHealth;
-        
+
         // movimento com WASD
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
@@ -97,28 +97,18 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R)) Revive();
     }
 
-    public void TakeDamage(int amount)
+    protected override void Die()
     {
-        // não aplica dano se já estiver morto
-        if (currentHealth <= 0) return;
-        currentHealth -= amount;
-
-        if (currentHealth <= 0)
-        {
-            Dead();
-        }
-    }
-
-    public void Dead()
-    {
-        animator.SetBool("IsDead", true);
+        isDead = true;
+        animator.SetBool("isDead", true);
         Debug.Log("Player morreu!");
     }
 
     public void Revive()
     {
         currentHealth = maxHealth;
-        animator.SetBool("IsDead", false);
+        isDead = false;
+        animator.SetBool("isDead", false);
         Debug.Log("Player reviveu!");
     }
 }

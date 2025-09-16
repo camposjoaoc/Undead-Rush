@@ -1,7 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Damageable
 {
     [Header("Stats")] [SerializeField] private float moveSpeed = 3f; // Velocidade de movimento do inimigo
     [SerializeField] private float maxHealth = 3f; // Vida máxima do inimigo
@@ -21,8 +21,8 @@ public class Enemy : MonoBehaviour
     {
         playerTarget = target;
         currentHealth = maxHealth;
+        isDead = false;
 
-        // Busca os componentes gráficos no filho
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
@@ -32,8 +32,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public void UpdateEnemy()
     {
-        if (!IsAlive() || playerTarget == null)
-            return;
+        if (isDead || playerTarget == null) return;
 
         // Calcula direção até o player
         Vector3 toPlayer = (playerTarget.position - transform.position).normalized;
@@ -46,39 +45,25 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    
     /// <summary>
-    /// Aplica dano no inimigo e verifica se morreu.
+    /// Comportamento de morte do inimigo (sobrescreve Damageable).
     /// </summary>
-    public void TakeDamage(float someDamage)
+    protected override void Die()
     {
-        if (!IsAlive()) return;
-
-        currentHealth -= someDamage;
-
-        if (currentHealth <= 0)
-        {
-            // Troca para animação de morte
-            animator?.SetBool("isDead", true);
-            Destroy(gameObject, 1.1f);
-        }
-        else
-        {
-            // Animação de impacto quando leva dano
-            animator?.SetTrigger("Hit");
-        }
+        if (isDead) return;
+        isDead = true;
+        
+        animator?.SetBool("isDead", true);
+        Destroy(gameObject, 1.1f);
     }
-
-    /// <summary>
-    /// Retorna true se o inimigo ainda está vivo.
-    /// </summary>
-    public bool IsAlive() => currentHealth > 0;
 
     /// <summary>
     /// Detecta colisão com o Player para causar dano.
     /// </summary>
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (!IsAlive()) return;
+        if (isDead) return;
 
         Player player = collision.GetComponent<Player>();
         if (player != null && Time.time > lastAttackTime + attackCooldown)
