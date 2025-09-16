@@ -4,9 +4,7 @@ using UnityEngine;
 public class Enemy : Damageable
 {
     [Header("Stats")] [SerializeField] private float moveSpeed = 3f; // Velocidade de movimento do inimigo
-    [SerializeField] private float maxHealth = 3f; // Vida máxima do inimigo
 
-    private float currentHealth; // Vida atual (decresce ao tomar dano)
     private Transform playerTarget; // Referência ao Player (passada pelo Manager)
     private Animator animator; // Controla animações (Idle, Run, Hit, Dead)
     private SpriteRenderer spriteRenderer; // Responsável por flipar o sprite esquerda/direita

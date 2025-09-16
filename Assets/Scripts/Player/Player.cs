@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : Damageable
@@ -36,12 +37,24 @@ public class Player : Damageable
         currentWeapon.transform.localPosition = Vector3.zero;
     }
 
+    
     void Update()
+    {
+        UpdateHealthUI();
+        HandleMovementAndAnimation();
+        HandleAimingAndWeapon();
+        HandleDebugInputs();
+    }
+
+    private void UpdateHealthUI()
     {
         // atualiza barra de vida
         HealthText.text = currentHealth.ToString("F0") + " / " + maxHealth.ToString();
         HealthBar.fillAmount = currentHealth / maxHealth;
+    }
 
+    private void HandleMovementAndAnimation()
+    {
         // movimento com WASD
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
@@ -51,48 +64,56 @@ public class Player : Damageable
         // animação de idle/run
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
-        
+    }
+
+    private void HandleAimingAndWeapon()
+    {
+        HandleAiming();
+        HandleWeapon();
+    }
+
+    private void HandleAiming()
+    {
         // posição do mouse
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
         // direção entre player e mouse
         Vector3 aimDir = (mousePos - transform.position).normalized;
-
-        // flip do player baseado no mouse
         bool lookingLeft = (mousePos.x < transform.position.x);
         spriteRenderer.flipX = lookingLeft;
 
-        // troca de mão da arma
-        if (currentWeapon != null)
-        {
-            if (lookingLeft)
-            {
-                currentWeapon.transform.SetParent(HandLeft, false);
-                currentWeapon.transform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                currentWeapon.transform.SetParent(HandRight, false);
-                currentWeapon.transform.localPosition = Vector3.zero;
-            }
+        if (currentWeapon == null) return;
 
-            // rotação da arma
-            currentWeapon.transform.right = aimDir;
+        // troca de mão
+        currentWeapon.transform.SetParent(lookingLeft ? HandLeft : HandRight, false);
+        currentWeapon.transform.localPosition = Vector3.zero;
 
-            // corrige flip vertical da arma quando player olha pra esquerda
-            Vector3 localScale = currentWeapon.transform.localScale;
-            localScale.y = lookingLeft ? -1 : 1;
-            currentWeapon.transform.localScale = localScale;
-        }
+        // rotação da arma
+        currentWeapon.transform.right = aimDir;
+
+        // corrige flip vertical da arma quando player olha pra esquerda
+        Vector3 localScale = currentWeapon.transform.localScale;
+        localScale.y = lookingLeft ? -1 : 1;
+        currentWeapon.transform.localScale = localScale;
+    }
+
+    private void HandleWeapon()
+    {
+        if (currentWeapon == null) return;
+
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePos.z = 0;
 
         // tiro
-        if (Input.GetMouseButtonDown(0) && currentWeapon != null)
+        if (Input.GetMouseButtonDown(0))
         {
             currentWeapon.Shoot(mousePos);
         }
+    }
 
-        // debug vida
+    private void HandleDebugInputs()
+    {
         if (Input.GetKeyDown(KeyCode.K)) TakeDamage(1);
         if (Input.GetKeyDown(KeyCode.R)) Revive();
     }
