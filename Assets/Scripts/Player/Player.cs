@@ -123,6 +123,7 @@ public class Player : Damageable
         isDead = true;
         animator.SetBool("isDead", true);
         Debug.Log("Player morreu!");
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void Revive()
