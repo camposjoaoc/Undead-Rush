@@ -57,15 +57,62 @@ PrefabInstance:
       value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
       propertyPath: maxHealth
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: moveSpeed
+      value: 3.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.b
+      value: 0.764151
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.g
+      value: 0.764151
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.r
+      value: 0.764151
       objectReference: {fileID: 0}
     - target: {fileID: 8691854474901608082, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 22100000, guid: 8d1d920724ffb8a409ce0e458dc4b7a9, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4753276897432549337, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: -723340048163122669}
   m_SourcePrefab: {fileID: 100100000, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+--- !u!1 &5469939470647255751 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4753276897432549337, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+  m_PrefabInstance: {fileID: 729065066927281438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-723340048163122669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5469939470647255751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f589e6b569ec2447917789d1ba365a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SentinelEnemy
+  maxHealth: 10
+  hitEffect: {fileID: 966932022925267194, guid: b57dc5f5402eacb4bbc0b198ccfa96ea, type: 3}
+  isDead: 0
+  moveSpeed: 3
+  detectionRange: 5
+  chargeSpeed: 3

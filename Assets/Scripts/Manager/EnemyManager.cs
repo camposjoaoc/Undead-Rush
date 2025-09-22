@@ -8,17 +8,20 @@ public class EnemyManager : MonoBehaviour
 
     [Header("Spawn Settings")] [SerializeField]
     private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
-    [SerializeField] private KillCounterUI killUI;  //Referência à UI de kills
     
+    [SerializeField] private int[] killThresholds = { 20, 30, 40, 50 }; //Thresholds de kills para dificuldade
+    
+    [SerializeField] private KillCounterUI killUI; //Referência à UI de kills
+
     [SerializeField] private float spawnInterval = 2f; //Intervalo de spawn em segundos
     [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
     [SerializeField] private int killCount = 0; //Contador de kills
     public int KillCount => killCount; //Propriedade pública para acessar kills
-    
+
     private List<Enemy> activeEnemies = new List<Enemy>(); //Lista de inimigos ativos
     private Transform player;
     private float timer;
-   
+
     void Awake()
     {
         //Define Singleton
@@ -54,9 +57,7 @@ public class EnemyManager : MonoBehaviour
         HandleSpawning();
     }
 
-    /// <summary>
     /// Atualiza todos os inimigos ativos e remove os mortos.
-    /// </summary>
     public void UpdateEnemies()
     {
         // Percorre a lista de inimigos de trás pra frente para permitir remoção segura
@@ -65,9 +66,9 @@ public class EnemyManager : MonoBehaviour
             // Pega o inimigo atual
             Enemy enemy = activeEnemies[i];
 
-            if (enemy != null && !enemy.isDead)   // inimigo está vivo
+            if (enemy != null && !enemy.isDead) // inimigo está vivo
             {
-                enemy.UpdateEnemy();              // atualiza movimento/flip
+                enemy.UpdateEnemy(); // atualiza movimento/flip
             }
             else if (enemy != null && enemy.isDead) // inimigo morreu
             {
@@ -81,9 +82,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Controla o tempo entre spawns.
-    /// </summary>
     public void HandleSpawning()
     {
         timer -= Time.deltaTime;
@@ -94,9 +93,7 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Spawn de um inimigo novo.
-    /// </summary>
     public void SpawnEnemy()
     {
         if (player == null) return;
@@ -119,11 +116,10 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Escolhe qual prefab spawnar baseado em kills.
-    /// </summary>
     GameObject ChooseEnemyPrefab()
     {
+        /*
         if (killCount < 20)
         {
             return enemyPrefabs[0];
@@ -133,15 +129,39 @@ public class EnemyManager : MonoBehaviour
             return enemyPrefabs[UnityEngine.Random.Range(0, 2)];
         }
 
+        else if (killCount < 40)
+        {
+            return enemyPrefabs[UnityEngine.Random.Range(0, 3)];
+        }
+        else if (killCount < 50)
+        {
+            return enemyPrefabs[UnityEngine.Random.Range(1, 4)];
+        }
         else
         {
             return enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
         }
+        */
+        
+        int unlocked = 1; // sempre começa com 1 tipo liberado
+
+        for (int i = 0; i < killThresholds.Length; i++)
+        {
+            if (killCount < killThresholds[i])
+            {
+                unlocked = i + 1;
+                break;
+            }
+        }
+
+        // Se passou de todos os thresholds, libera todos
+        if (killCount >= killThresholds[killThresholds.Length - 1])
+            unlocked = enemyPrefabs.Length;
+
+        return enemyPrefabs[UnityEngine.Random.Range(0, unlocked)];
     }
 
-    /// <summary>
-    /// Conta um kill e pode acelerar dificuldade.
-    /// </summary>
+    //Conta um kill e pode acelerar dificuldade.
     public void RegisterKill()
     {
         killCount++;
@@ -152,8 +172,8 @@ public class EnemyManager : MonoBehaviour
         {
             killUI.UpdateKillCount(killCount);
         }
-        
-        // Acelera spawn a cada 20 kills
+
+        // Acelera spawn a cada 25 kills
         if (killCount % 25 == 0 && spawnInterval > 0.5f)
         {
             spawnInterval -= 0.2f;

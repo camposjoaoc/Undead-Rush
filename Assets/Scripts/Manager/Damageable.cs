@@ -4,6 +4,7 @@ using System;
 public abstract class Damageable : MonoBehaviour
 {
     [SerializeField] protected float maxHealth = 10f;
+    [SerializeField] private ParticleSystem hitEffect;
     protected float currentHealth;
     public bool isDead = false;
     
@@ -18,8 +19,15 @@ public abstract class Damageable : MonoBehaviour
     public virtual void TakeDamage(float damage)
     {
         if(isDead) return;
+        
         currentHealth -= damage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        
+        // Efeito de hit
+        if (hitEffect != null)
+        {
+           Instantiate(hitEffect, transform.position, Quaternion.identity);
+        }
         if (currentHealth <= 0) Die();
     }
 

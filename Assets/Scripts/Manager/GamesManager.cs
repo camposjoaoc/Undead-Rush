@@ -30,6 +30,7 @@ public class GamesManager : MonoBehaviour
 
     [SerializeField] private EnemyManager enemyManager;
     [SerializeField] private Player player;
+    [SerializeField] private GameObject pauseUI;
 
     private void Start()
     {
@@ -71,5 +72,22 @@ public class GamesManager : MonoBehaviour
     public void SwitchState(GameState aState)
     {
         currentGameState = aState;
+
+        if (pauseUI != null)
+        {
+            pauseUI.SetActive(currentGameState == GameState.Paused);
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (currentGameState == GameState.Playing)
+        {
+            SwitchState(GameState.Paused);
+        }
+        else if (currentGameState == GameState.Paused)
+        {
+            SwitchState(GameState.Playing);
+        }
     }
 }

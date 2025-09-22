@@ -60,6 +60,22 @@ PrefabInstance:
       propertyPath: maxHealth
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: moveSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.b
+      value: 0.3207547
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.g
+      value: 0.013616939
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463130509163577939, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
+      propertyPath: hitColor.r
+      value: 0.14206533
+      objectReference: {fileID: 0}
     - target: {fileID: 8691854474901608082, guid: a7520901c42eac54e9a172af12a005a0, type: 3}
       propertyPath: m_Controller
       value: 

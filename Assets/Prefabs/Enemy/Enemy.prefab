@@ -161,9 +161,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 3
+  hitEffect: {fileID: 966932022925267194, guid: b57dc5f5402eacb4bbc0b198ccfa96ea, type: 3}
+  hitColor: {r: 0.062032763, g: 0.7735849, b: 0.44152722, a: 1}
   isDead: 0
   moveSpeed: 3
-  maxHealth: 3
 --- !u!50 &-2571148767658997712
 Rigidbody2D:
   serializedVersion: 5
