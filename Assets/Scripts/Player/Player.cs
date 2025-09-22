@@ -38,7 +38,7 @@ public class Player : Damageable
     }
 
     
-    void Update()
+    public void UpdatePlayer()
     {
         UpdateHealthUI();
         HandleMovementAndAnimation();

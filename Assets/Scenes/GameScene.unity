@@ -8493,6 +8493,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &223236842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 223236844}
+  - component: {fileID: 223236843}
+  m_Layer: 0
+  m_Name: GamesManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &223236843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223236842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45cf5c9e532d9724ab0330c3678f07db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamesManager
+  enemyManager: {fileID: 205321935}
+  player: {fileID: 3961408094643465770}
+--- !u!4 &223236844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223236842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 271.69534, y: 105.30228, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &280323381
 GameObject:
   m_ObjectHideFlags: 0
@@ -101285,6 +101331,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4421531619196019040, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
   m_PrefabInstance: {fileID: 3961408094643465768}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3961408094643465770 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1983385170015126272, guid: 8e35bc3bc0f528042b335f94910d481e, type: 3}
+  m_PrefabInstance: {fileID: 3961408094643465768}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d515b01568e1474b88c3ae257265e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -101296,3 +101353,4 @@ SceneRoots:
   - {fileID: 205321936}
   - {fileID: 1461304745}
   - {fileID: 1023437087}
+  - {fileID: 223236844}

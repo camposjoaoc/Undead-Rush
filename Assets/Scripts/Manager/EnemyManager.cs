@@ -47,7 +47,7 @@ public class EnemyManager : MonoBehaviour
     }
 
 
-    void Update()
+    public void UpdateEnemyManager()
     {
         //Atualiza inimigos e controla spawn
         UpdateEnemies();
