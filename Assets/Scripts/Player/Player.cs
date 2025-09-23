@@ -133,4 +133,18 @@ public class Player : Damageable
         animator.SetBool("isDead", false);
         Debug.Log("Player reviveu!");
     }
+
+    // Upgrades
+    public void UpgradeMaxHealth()
+    {
+        maxHealth += 10;
+        currentHealth += 5;
+        GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
+    }
+    
+    public void UpgradeMovementSpeed()
+    {
+        moveSpeed += 0.5f;
+        GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
+    }
 }

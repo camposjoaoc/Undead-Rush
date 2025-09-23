@@ -27,11 +27,15 @@ public class GamesManager : MonoBehaviour
     }
 
     private GameState currentGameState;
-
+    // References to other managers and UI
     [SerializeField] private EnemyManager enemyManager;
     [SerializeField] private Player player;
     [SerializeField] private GameObject pauseUI;
-
+    
+    // Experience and Leveling
+    private int currentExperience = 0;
+    [SerializeField] private int maxExperience = 1;
+    [SerializeField] GameObject upGradeUI;
     private void Start()
     {
         SwitchState(GameState.Playing);
@@ -71,6 +75,7 @@ public class GamesManager : MonoBehaviour
 
     public void SwitchState(GameState aState)
     {
+        upGradeUI.SetActive(aState == GameState.Upgrade);
         currentGameState = aState;
 
         if (pauseUI != null)
@@ -88,6 +93,19 @@ public class GamesManager : MonoBehaviour
         else if (currentGameState == GameState.Paused)
         {
             SwitchState(GameState.Playing);
+        }
+    }
+    
+    public void AddExperience(int someXP= 1)
+    {
+        currentExperience += someXP;
+        
+        if (currentExperience >= maxExperience)
+        {
+            currentExperience = 0;
+            maxExperience *= 2;
+            SwitchState(GameState.Upgrade);
+            Debug.Log("Level Up! Next level at " + maxExperience + " XP.");
         }
     }
 }

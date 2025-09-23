@@ -47,6 +47,8 @@ public class Enemy : Damageable
         
         animator?.SetBool("isDead", true);
         Destroy(gameObject, 1.1f);
+        
+        GamesManager.Instance.AddExperience();
     }
     
     /// Detecta colisão com o Player para causar dano.
