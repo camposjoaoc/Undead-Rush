@@ -56,6 +56,7 @@ public class GamesManager : MonoBehaviour
                 }
 
                 break;
+            
             case GameState.Paused:
                 // Lógica do jogo pausado
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -64,9 +65,11 @@ public class GamesManager : MonoBehaviour
                 }
 
                 break;
+            
             case GameState.Upgrade:
                 // Lógica do jogo em modo de upgrade
                 break;
+            
             case GameState.GameOver:
                 // Lógica do jogo terminado
                 break;
@@ -103,7 +106,7 @@ public class GamesManager : MonoBehaviour
         if (currentExperience >= maxExperience)
         {
             currentExperience = 0;
-            maxExperience *= 2;
+            maxExperience *= 10;
             SwitchState(GameState.Upgrade);
             Debug.Log("Level Up! Next level at " + maxExperience + " XP.");
         }

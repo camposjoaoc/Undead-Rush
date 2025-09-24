@@ -138,7 +138,7 @@ public class Player : Damageable
     public void UpgradeMaxHealth()
     {
         maxHealth += 10;
-        currentHealth += 5;
+        currentHealth = Mathf.Min(currentHealth + 5, maxHealth);
         GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
     }
     
@@ -146,5 +146,10 @@ public class Player : Damageable
     {
         moveSpeed += 0.5f;
         GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
+    }
+
+    public void UpgradeAddWeapon()
+    {
+        
     }
 }

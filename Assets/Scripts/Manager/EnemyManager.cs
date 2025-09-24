@@ -143,7 +143,7 @@ public class EnemyManager : MonoBehaviour
         }
         */
         
-        int unlocked = 1; // sempre começa com 1 tipo liberado
+        int unlocked = 3; // sempre começa com 3 tipo liberado
 
         for (int i = 0; i < killThresholds.Length; i++)
         {
