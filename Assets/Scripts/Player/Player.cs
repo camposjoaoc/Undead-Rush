@@ -5,18 +5,17 @@ using UnityEngine.UI;
 
 public class Player : Damageable
 {
-    [Header("Referências")]
-    [SerializeField] Transform playerModel;
+    [Header("Referências")] [SerializeField]
+    Transform playerModel;
+
     [SerializeField] private Transform HandRight;
     [SerializeField] private Transform HandLeft;
     [SerializeField] private GameObject startingWeaponPrefab;
 
-    [Header("PlayerUI")]
-    [SerializeField] Image HealthBar;
+    [Header("PlayerUI")] [SerializeField] Image HealthBar;
     [SerializeField] TextMeshProUGUI HealthText;
-    
-    [Header("Movimento")]
-    [SerializeField] float moveSpeed = 3f;
+
+    [Header("Movimento")] [SerializeField] float moveSpeed = 3f;
 
     private Weapon currentWeapon;
     private Animator animator;
@@ -37,7 +36,7 @@ public class Player : Damageable
         currentWeapon.transform.localPosition = Vector3.zero;
     }
 
-    
+
     public void UpdatePlayer()
     {
         UpdateHealthUI();
@@ -135,21 +134,19 @@ public class Player : Damageable
     }
 
     // Upgrades
-    public void UpgradeMaxHealth()
+    public void IncreaseMaxHealth(float amount)
     {
-        maxHealth += 10;
-        currentHealth = Mathf.Min(currentHealth + 5, maxHealth);
-        GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
-    }
-    
-    public void UpgradeMovementSpeed()
-    {
-        moveSpeed += 0.5f;
-        GamesManager.Instance.SwitchState(GamesManager.GameState.Playing);
+        maxHealth += amount;
+        currentHealth = maxHealth;
     }
 
-    public void UpgradeAddWeapon()
+    public void IncreaseMoveSpeed(float amount)
     {
-        
+        moveSpeed += amount;
+    }
+
+    public void UnlockSecondaryWeapon()
+    {
+        // Ativa a pá ou outra arma
     }
 }

@@ -1,6 +1,8 @@
+using TMPro;
 using System;
-using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GamesManager : MonoBehaviour
 {
@@ -27,17 +29,26 @@ public class GamesManager : MonoBehaviour
     }
 
     private GameState currentGameState;
+
     // References to other managers and UI
     [SerializeField] private EnemyManager enemyManager;
     [SerializeField] private Player player;
     [SerializeField] private GameObject pauseUI;
-    
-    // Experience and Leveling
-    private int currentExperience = 0;
-    [SerializeField] private int maxExperience = 1;
     [SerializeField] GameObject upGradeUI;
+
+    // Experience and Leveling
+    [SerializeField] private int experience = 0;
+    [SerializeField] private int level = 1;
+    [SerializeField] private int xpToNextLevel = 20;
+
+    [SerializeField] private Image xpBarFill;
+    [SerializeField] TextMeshProUGUI levelText;
+
+
     private void Start()
     {
+        xpBarFill.fillAmount = 0f;
+        levelText.text = "Lv 1 (0%)";
         SwitchState(GameState.Playing);
     }
 
@@ -56,7 +67,7 @@ public class GamesManager : MonoBehaviour
                 }
 
                 break;
-            
+
             case GameState.Paused:
                 // Lógica do jogo pausado
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -65,11 +76,11 @@ public class GamesManager : MonoBehaviour
                 }
 
                 break;
-            
+
             case GameState.Upgrade:
                 // Lógica do jogo em modo de upgrade
                 break;
-            
+
             case GameState.GameOver:
                 // Lógica do jogo terminado
                 break;
@@ -98,17 +109,41 @@ public class GamesManager : MonoBehaviour
             SwitchState(GameState.Playing);
         }
     }
-    
-    public void AddExperience(int someXP= 1)
+
+    public void AddExperience(int amout)
     {
-        currentExperience += someXP;
-        
-        if (currentExperience >= maxExperience)
+        experience += amout;
+        Debug.Log($"XP: {experience}/{xpToNextLevel}");
+
+        if (experience >= xpToNextLevel)
         {
-            currentExperience = 0;
-            maxExperience *= 10;
-            SwitchState(GameState.Upgrade);
-            Debug.Log("Level Up! Next level at " + maxExperience + " XP.");
+            LevelUp();
+        }
+        UpdateXPUI();
+    }
+
+    private void LevelUp()
+    {
+        level++;
+        experience = 0;
+        xpToNextLevel = Mathf.RoundToInt(xpToNextLevel * 1.5f);
+        Debug.Log($"LEVEL UP! Level atual: {level}");
+        UpdateXPUI();
+        // Vai para o estado de upgrade
+        SwitchState(GameState.Upgrade);
+    }
+
+    private void UpdateXPUI()
+    {
+        if (xpBarFill != null)
+        {
+            xpBarFill.fillAmount = (float)experience / xpToNextLevel;
+        }
+
+        if (levelText != null)
+        {
+            float percent = (float)experience / xpToNextLevel * 100f;
+            levelText.text = $"Lv {level}  ({percent:0}%)";
         }
     }
 }
