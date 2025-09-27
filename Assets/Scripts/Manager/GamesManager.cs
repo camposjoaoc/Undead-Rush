@@ -44,6 +44,7 @@ public class GamesManager : MonoBehaviour
     [SerializeField] private Image xpBarFill;
     [SerializeField] TextMeshProUGUI levelText;
 
+    public GameState CurrentState => currentGameState;
 
     private void Start()
     {
