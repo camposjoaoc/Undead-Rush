@@ -5,19 +5,15 @@ using UnityEngine;
 [Serializable]
 public struct SaveData
 {
-    public int HighScore;
+    public int highScore;
     public float survivalTime;
-    public string UserName;
-    public Vector3 PlayerPosition;
-
-    public int Health;
-    public float Speed;
+    public string userName;
 }
 
 public class SaveManager : MonoBehaviour
 {
     [SerializeField] private SaveData data;
-    [SerializeField] private string fileName;
+    [SerializeField] private string fileName = "saveData";
 
     string GetPath()
     {
