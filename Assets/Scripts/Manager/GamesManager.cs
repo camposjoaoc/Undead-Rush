@@ -45,12 +45,14 @@ public class GamesManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI levelText;
 
     public GameState CurrentState => currentGameState;
+    [SerializeField] SaveManager saveManager;
 
     private void Start()
     {
         xpBarFill.fillAmount = 0f;
         levelText.text = "Lv 1 (0%)";
         SwitchState(GameState.Playing);
+        saveManager.LoadData();
     }
 
     private void Update()
@@ -83,7 +85,6 @@ public class GamesManager : MonoBehaviour
                 break;
 
             case GameState.GameOver:
-                // Lógica do jogo terminado
                 break;
         }
     }
@@ -96,6 +97,14 @@ public class GamesManager : MonoBehaviour
         if (pauseUI != null)
         {
             pauseUI.SetActive(currentGameState == GameState.Paused);
+        }
+
+        switch (aState)
+        {
+            case GameState.GameOver:
+                saveManager.SetHighScore(level);
+                SceneManager.LoadScene("MainMenu");
+                break;
         }
     }
 
@@ -120,6 +129,7 @@ public class GamesManager : MonoBehaviour
         {
             LevelUp();
         }
+
         UpdateXPUI();
     }
 

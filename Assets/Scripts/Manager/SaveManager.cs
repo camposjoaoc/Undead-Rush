@@ -13,23 +13,20 @@ public struct SaveData
 public class SaveManager : MonoBehaviour
 {
     [SerializeField] private SaveData data;
-    [SerializeField] private string fileName = "saveData";
+    [SerializeField] private string fileName;
+
+    public int GetHighScore => data.highScore;
 
     string GetPath()
     {
         return Application.persistentDataPath + "/" + fileName + ".json";
     }
 
-    public void Start()
-    {
-        SaveData();
-    }
-
     public void LoadData()
     {
         if (File.Exists(GetPath()))
         {
-            SaveData();
+            SaveGameFile();
             return;
         }
 
@@ -37,10 +34,18 @@ public class SaveManager : MonoBehaviour
         data = JsonUtility.FromJson<SaveData>(jsonFile);
     }
 
-    public void SaveData()
+    public void SaveGameFile()
     {
         string jsonFile = JsonUtility.ToJson(data, true);
 
         File.WriteAllText(GetPath(), jsonFile);
+    }
+
+    public void SetHighScore(int someScore)
+    {
+        if (data.highScore > someScore) return;
+
+        data.highScore = someScore;
+        SaveGameFile();
     }
 }

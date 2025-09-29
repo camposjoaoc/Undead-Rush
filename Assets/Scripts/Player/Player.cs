@@ -13,9 +13,13 @@ public class Player : Damageable
     [SerializeField] private Transform HandLeft;
     [SerializeField] private GameObject startingWeaponPrefab;
     
+    [Header("Armas Secundárias")] 
     [SerializeField] private GameObject shovelPrefab; // Prefab da pá
     private List<Shovel> activeShovels = new List<Shovel>();
     private int maxShovels = 4;
+    
+    [SerializeField] private GameObject tridentWeaponPrefab; // Prefab do tridente
+    private TridentWeapon tridentWeapon;
     
     [Header("PlayerUI")] 
     [SerializeField] Image HealthBar;
@@ -128,7 +132,7 @@ public class Player : Damageable
         isDead = true;
         animator.SetBool("isDead", true);
         Debug.Log("Player morreu!");
-        SceneManager.LoadScene("MainMenu");
+        GamesManager.Instance.SwitchState(GamesManager.GameState.GameOver);
     }
 
     public void Revive()
@@ -162,6 +166,15 @@ public class Player : Damageable
         for (int i = 0; i < activeShovels.Count; i++)
         {
             activeShovels[i].Initialize(transform, i * angleStep);
+        }
+    }
+    
+    public void UnlockTertiaryWeapon()
+    {
+        if (tridentWeapon == null)
+        {
+            GameObject tridentInstance = Instantiate(tridentWeaponPrefab, transform);
+            tridentWeapon = tridentInstance.GetComponent<TridentWeapon>();
         }
     }
 }

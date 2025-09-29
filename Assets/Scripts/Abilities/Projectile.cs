@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+    [SerializeField] public int damage = 1;
     private Vector3 velocity = new();
     private float speed = 0;
 
@@ -26,7 +27,7 @@ public class Projectile : MonoBehaviour
         
         if (enemy != null)
         {
-            enemy.TakeDamage(1); // causa dano no inimigo
+            enemy.TakeDamage(damage); // causa dano no inimigo
             Destroy(gameObject); // destrói o projétil
         }
     }

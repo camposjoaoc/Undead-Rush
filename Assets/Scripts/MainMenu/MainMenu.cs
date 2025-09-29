@@ -1,16 +1,21 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("UI Panels")] [SerializeField] private GameObject MainMenuUI;
+    [Header("UI Panels")]
+    [SerializeField] private GameObject MainMenuUI;
     [SerializeField] private GameObject SettingsUI;
 
-    [Header("Settings")] [SerializeField] private Slider VolumeSlider;
+    [Header("Settings")] 
+    [SerializeField] private Slider VolumeSlider;
     [SerializeField] private Toggle Fullscreen;
     [SerializeField] private Toggle VSync;
 
+    [SerializeField] SaveManager saveManager; // Referência ao SaveManager
+    [SerializeField] TextMeshProUGUI highScoreText; // Referência ao texto de high score
 
     private void Start()
     {
@@ -25,6 +30,11 @@ public class MainMenu : MonoBehaviour
         VolumeSlider.onValueChanged.AddListener(ApplyVolume);
         Fullscreen.onValueChanged.AddListener(SetFullscreen);
         VSync.onValueChanged.AddListener(SetVSync);
+        
+        // Carrega o high score do SaveManager
+        saveManager.LoadData();
+        highScoreText.text = "High Score: " + saveManager.GetHighScore.ToString();
+
     }
 
     public void PlayGame()

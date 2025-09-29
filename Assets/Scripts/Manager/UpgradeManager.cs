@@ -21,6 +21,10 @@ public class UpgradeManager : MonoBehaviour
             case "UnlockSecondaryWeapon":
                 player.UnlockSecondaryWeapon();
                 break;
+            
+            case "UnlockTertiaryWeapon":
+                player.UnlockTertiaryWeapon();
+                break;
 
             default:
                 Debug.LogWarning("Upgrade not found: " + upgradeName);
