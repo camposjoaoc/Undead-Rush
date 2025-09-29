@@ -102,7 +102,8 @@ public class GamesManager : MonoBehaviour
         switch (aState)
         {
             case GameState.GameOver:
-                saveManager.SetHighScore(level);
+                int kills = enemyManager.KillCount;
+                saveManager.SetHighScore(kills);
                 SceneManager.LoadScene("MainMenu");
                 break;
         }

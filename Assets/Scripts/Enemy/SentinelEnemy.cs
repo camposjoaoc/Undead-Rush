@@ -8,7 +8,8 @@ public class SentinelEnemy : Enemy
     private bool isCharging = false;
 
     public override void UpdateEnemy()
-    {    {
+    {
+        {
             if (isDead || playerTarget == null) return;
 
             float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);

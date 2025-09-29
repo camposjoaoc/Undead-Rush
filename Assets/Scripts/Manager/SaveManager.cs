@@ -26,12 +26,14 @@ public class SaveManager : MonoBehaviour
     {
         if (File.Exists(GetPath()))
         {
-            SaveGameFile();
-            return;
+            string jsonFile = File.ReadAllText(GetPath());
+            data = JsonUtility.FromJson<SaveData>(jsonFile);
         }
-
-        string jsonFile = File.ReadAllText(GetPath());
-        data = JsonUtility.FromJson<SaveData>(jsonFile);
+        else
+        {
+            data = new SaveData();
+            SaveGameFile();
+        }
     }
 
     public void SaveGameFile()

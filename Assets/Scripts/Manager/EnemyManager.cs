@@ -119,30 +119,6 @@ public class EnemyManager : MonoBehaviour
     /// Escolhe qual prefab spawnar baseado em kills.
     GameObject ChooseEnemyPrefab()
     {
-        /*
-        if (killCount < 20)
-        {
-            return enemyPrefabs[0];
-        }
-        else if (killCount < 30)
-        {
-            return enemyPrefabs[UnityEngine.Random.Range(0, 2)];
-        }
-
-        else if (killCount < 40)
-        {
-            return enemyPrefabs[UnityEngine.Random.Range(0, 3)];
-        }
-        else if (killCount < 50)
-        {
-            return enemyPrefabs[UnityEngine.Random.Range(1, 4)];
-        }
-        else
-        {
-            return enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Length)];
-        }
-        */
-        
         int unlocked = 3; // sempre começa com 3 tipo liberado
 
         for (int i = 0; i < killThresholds.Length; i++)
