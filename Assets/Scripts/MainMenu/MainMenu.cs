@@ -34,6 +34,7 @@ public class MainMenu : MonoBehaviour
         // Carrega o high score do SaveManager
         saveManager.LoadData();
        //highScoreText.text = "High Score: " + saveManager.GetHighScore.ToString() + " Kills";
+       SoundManager.Instance.PlaySoundEffect(SoundEffects.MenuBackgroundSound);
 
     }
 

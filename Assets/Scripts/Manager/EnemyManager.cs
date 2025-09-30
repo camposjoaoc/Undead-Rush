@@ -45,7 +45,7 @@ public class EnemyManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EnemyManager: Player not found in scene!");
+            Debug.LogWarning("[EnemyManager] Player not found in scene!");
         }
     }
 
@@ -112,7 +112,7 @@ public class EnemyManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("EnemyManager: Spawned object does not have an Enemy component!");
+            Debug.LogWarning("[EnemyManager] Spawned object does not have an Enemy component!");
         }
     }
 
@@ -141,7 +141,7 @@ public class EnemyManager : MonoBehaviour
     public void RegisterKill()
     {
         killCount++;
-        Debug.Log("EnemyManager: Total Kills = " + killCount);
+        Debug.Log("[EnemyManager] Total Kills = " + killCount);
 
         // Atualiza HUD
         if (killUI != null)
@@ -153,7 +153,7 @@ public class EnemyManager : MonoBehaviour
         if (killCount % 25 == 0 && spawnInterval > 0.5f)
         {
             spawnInterval -= 0.2f;
-            Debug.Log("Spawn interval acelerated: " + spawnInterval);
+            Debug.Log("[EnemyManager] Spawn interval acelerated: " + spawnInterval);
         }
     }
 }

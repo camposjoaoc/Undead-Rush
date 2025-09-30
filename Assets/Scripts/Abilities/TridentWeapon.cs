@@ -11,6 +11,9 @@ public class TridentWeapon : MonoBehaviour
 
     private void Update()
     {
+        if (GamesManager.Instance.CurrentState != GamesManager.GameState.Playing)
+            return;
+
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
@@ -23,14 +26,14 @@ public class TridentWeapon : MonoBehaviour
     {
         Player player = GetComponentInParent<Player>();
         if (player == null) return;
-        
+
         // Determina a direção do disparo com base na orientação do jogador
         bool facingLeft = player.GetComponentInChildren<SpriteRenderer>().flipX;
         Vector3 fireDirection = facingLeft ? Vector3.left : Vector3.right;
-        
+
         // Instancia o projétil na posição do jogador
         GameObject ptridentObj = Instantiate(tridentProjectilePrefab, player.transform.position, Quaternion.identity);
-        
+
         // Inicializa o projétil com a direção e velocidade
         Projectile tridentProjectile = ptridentObj.GetComponent<Projectile>();
         if (tridentProjectile != null)

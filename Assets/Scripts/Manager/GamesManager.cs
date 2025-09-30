@@ -67,6 +67,7 @@ public class GamesManager : MonoBehaviour
         {
             gameOverUI.SetActive(false);
         }
+        SoundManager.Instance.PlaySoundEffect(SoundEffects.BackgroundSound);
     }
 
     private void Update()
@@ -106,24 +107,6 @@ public class GamesManager : MonoBehaviour
 
     public void SwitchState(GameState aState)
     {
-        /*
-        upGradeUI.SetActive(aState == GameState.Upgrade);
-        currentGameState = aState;
-
-        if (pauseUI != null)
-        {
-            pauseUI.SetActive(currentGameState == GameState.Paused);
-        }
-
-        switch (aState)
-        {
-            case GameState.GameOver:
-                int kills = enemyManager.KillCount;
-                saveManager.SetHighScore(kills);
-                SceneManager.LoadScene("MainMenu");
-                break;
-        }
-        */
         currentGameState = aState;
         if (pauseUI != null)
         {
@@ -140,6 +123,7 @@ public class GamesManager : MonoBehaviour
             if (currentGameState == GameState.GameOver)
             {
                 ShowGameOver();
+                SoundManager.Instance.PlaySoundEffect(SoundEffects.GameOver);
             }
             else
             {
@@ -158,7 +142,7 @@ public class GamesManager : MonoBehaviour
         int minutes = Mathf.FloorToInt(playTime / 60f);
         int seconds = Mathf.FloorToInt(playTime % 60f);
 
-        statsText.text = $"Enemy Kills: {kills}\nTime Survived: {minutes:00}:{seconds:00}";
+        statsText.text = $"Enemy Kills: {kills} Time Survived: {minutes:00}:{seconds:00}";
     }
 
     public void SaveScore()
@@ -185,7 +169,7 @@ public class GamesManager : MonoBehaviour
     public void AddExperience(int amout)
     {
         experience += amout;
-        Debug.Log($"XP: {experience}/{xpToNextLevel}");
+        Debug.Log($"[GamesManager] XP: {experience}/{xpToNextLevel}");
 
         if (experience >= xpToNextLevel)
         {
@@ -200,8 +184,12 @@ public class GamesManager : MonoBehaviour
         level++;
         experience = 0;
         xpToNextLevel = Mathf.RoundToInt(xpToNextLevel * 1.5f);
-        Debug.Log($"LEVEL UP! Level atual: {level}");
+        Debug.Log($"[GamesManager] LEVEL UP! Level atual: {level}");
+        
+        SoundManager.Instance.PlaySoundEffect(SoundEffects.LevelUp);
+        
         UpdateXPUI();
+        
         // Vai para o estado de upgrade
         SwitchState(GameState.Upgrade);
     }

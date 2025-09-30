@@ -118,6 +118,7 @@ public class Player : Damageable
         if (Input.GetMouseButtonDown(0))
         {
             currentWeapon.Shoot(mousePos);
+            SoundManager.Instance.PlaySoundEffect(SoundEffects.PlayerShoot);
         }
     }
 
@@ -132,7 +133,10 @@ public class Player : Damageable
         currentHealth = 0;
         isDead = true;
         animator.SetBool("isDead", true);
-        Debug.Log("Player morreu!");
+        Debug.Log("[Player] Player morreu!");
+        
+        SoundManager.Instance.PlaySoundEffect(SoundEffects.PlayerDeath);
+        
         UpdateHealthUI();
         GamesManager.Instance.SwitchState(GamesManager.GameState.GameOver);
     }
@@ -142,7 +146,7 @@ public class Player : Damageable
         currentHealth = maxHealth;
         isDead = false;
         animator.SetBool("isDead", false);
-        Debug.Log("Player reviveu!");
+        Debug.Log("[Player] Player reviveu!");
     }
 
     // Upgrades
