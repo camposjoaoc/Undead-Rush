@@ -47,12 +47,26 @@ public class GamesManager : MonoBehaviour
     public GameState CurrentState => currentGameState;
     [SerializeField] SaveManager saveManager;
 
+    [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private TextMeshProUGUI statsText;
+    [SerializeField] private TMP_InputField nameInput;
+    private float playTime;
+
     private void Start()
     {
+        playTime = 0f;
+        
         xpBarFill.fillAmount = 0f;
         levelText.text = "Lv 1 (0%)";
+        
         SwitchState(GameState.Playing);
+        
         saveManager.LoadData();
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(false);
+        }
     }
 
     private void Update()
@@ -63,6 +77,7 @@ public class GamesManager : MonoBehaviour
                 // Lógica do jogo em andamento atualizado managers
                 enemyManager.UpdateEnemyManager();
                 player.UpdatePlayer();
+                playTime += Time.deltaTime;
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
@@ -91,6 +106,7 @@ public class GamesManager : MonoBehaviour
 
     public void SwitchState(GameState aState)
     {
+        /*
         upGradeUI.SetActive(aState == GameState.Upgrade);
         currentGameState = aState;
 
@@ -107,6 +123,51 @@ public class GamesManager : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
                 break;
         }
+        */
+        currentGameState = aState;
+        if (pauseUI != null)
+        {
+            pauseUI.SetActive(currentGameState == GameState.Paused);
+        }
+
+        if (upGradeUI != null)
+        {
+            upGradeUI.SetActive(currentGameState == GameState.Upgrade);
+        }
+
+        if (gameOverUI != null)
+        {
+            if (currentGameState == GameState.GameOver)
+            {
+                ShowGameOver();
+            }
+            else
+            {
+                gameOverUI.SetActive(false);
+            }
+        }
+    }
+
+    private void ShowGameOver()
+    {
+        if (gameOverUI == null) return;
+
+        gameOverUI.SetActive(true);
+
+        int kills = enemyManager.KillCount;
+        int minutes = Mathf.FloorToInt(playTime / 60f);
+        int seconds = Mathf.FloorToInt(playTime % 60f);
+
+        statsText.text = $"Enemy Kills: {kills}\nTime Survived: {minutes:00}:{seconds:00}";
+    }
+
+    public void SaveScore()
+    {
+        int kills = enemyManager.KillCount;
+        string playerName = nameInput.text;
+        saveManager.SetHighScore(kills, playerName, playTime);
+        
+        statsText.text += "\n<color=green>Score Saved!</color>";
     }
 
     public void TogglePause()
@@ -157,5 +218,15 @@ public class GamesManager : MonoBehaviour
             float percent = (float)experience / xpToNextLevel * 100f;
             levelText.text = $"Lv {level}  ({percent:0}%)";
         }
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void PlayAgain()
+    {
+        SceneManager.LoadScene("GameScene");
     }
 }

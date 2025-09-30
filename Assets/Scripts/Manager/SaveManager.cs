@@ -5,49 +5,62 @@ using UnityEngine;
 [Serializable]
 public struct SaveData
 {
-    public int highScore;
-    public float survivalTime;
-    public string userName;
+    public int highScoreKills;
+    public float bestTime;
+    public string playerName;
 }
 
 public class SaveManager : MonoBehaviour
 {
-    [SerializeField] private SaveData data;
-    [SerializeField] private string fileName;
+    public static SaveManager Instance;
+    private string savePath;
+    private SaveData currentData;
 
-    public int GetHighScore => data.highScore;
-
-    string GetPath()
+    private void Awake()
     {
-        return Application.persistentDataPath + "/" + fileName + ".json";
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+        savePath = Path.Combine(Application.persistentDataPath, "Undead_Rush_Save.json");
+    }
+
+    [System.Serializable]
+    public class SaveData
+    {
+        public string playerName;
+        public int highScoreKills;
+        public float bestTime;
+    }
+
+    public void SetHighScore(int kills, string playerName, float time)
+    {
+        if (currentData == null) currentData = new SaveData();
+        if (kills > currentData.highScoreKills)
+        {
+            currentData.playerName = playerName;
+            currentData.highScoreKills = kills;
+            currentData.bestTime = time;
+        }
+
+        Save();
+    }
+
+    private void Save()
+    {
+        string json = JsonUtility.ToJson(currentData, true);
+        File.WriteAllText(savePath, json);
     }
 
     public void LoadData()
     {
-        if (File.Exists(GetPath()))
+        if (File.Exists(savePath))
         {
-            string jsonFile = File.ReadAllText(GetPath());
-            data = JsonUtility.FromJson<SaveData>(jsonFile);
-        }
-        else
-        {
-            data = new SaveData();
-            SaveGameFile();
+            string json = File.ReadAllText(savePath);
+            currentData = JsonUtility.FromJson<SaveData>(json);
         }
     }
 
-    public void SaveGameFile()
+    public SaveData GetData()
     {
-        string jsonFile = JsonUtility.ToJson(data, true);
-
-        File.WriteAllText(GetPath(), jsonFile);
-    }
-
-    public void SetHighScore(int someScore)
-    {
-        if (data.highScore > someScore) return;
-
-        data.highScore = someScore;
-        SaveGameFile();
+        return currentData;
     }
 }

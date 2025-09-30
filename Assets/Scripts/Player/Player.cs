@@ -129,9 +129,11 @@ public class Player : Damageable
 
     protected override void Die()
     {
+        currentHealth = 0;
         isDead = true;
         animator.SetBool("isDead", true);
         Debug.Log("Player morreu!");
+        UpdateHealthUI();
         GamesManager.Instance.SwitchState(GamesManager.GameState.GameOver);
     }
 

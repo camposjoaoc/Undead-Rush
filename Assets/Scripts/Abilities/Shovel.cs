@@ -5,7 +5,7 @@ public class Shovel : MonoBehaviour
 {
     [SerializeField] private float orbitRadius = 1.5f; // Raio da órbita
     [SerializeField] private float orbitSpeed = 90f; // Graus por segundo
-    [SerializeField] private int damage = 5;
+    [SerializeField] private int damage = 3;
 
     private Transform player;
     private float angle;
