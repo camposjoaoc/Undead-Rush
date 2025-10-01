@@ -5,12 +5,10 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("UI Panels")]
-    [SerializeField] private GameObject MainMenuUI;
+    [Header("UI Panels")] [SerializeField] private GameObject MainMenuUI;
     [SerializeField] private GameObject SettingsUI;
 
-    [Header("Settings")] 
-    [SerializeField] private Slider VolumeSlider;
+    [Header("Settings")] [SerializeField] private Slider VolumeSlider;
     [SerializeField] private Toggle Fullscreen;
     [SerializeField] private Toggle VSync;
 
@@ -23,19 +21,36 @@ public class MainMenu : MonoBehaviour
         VolumeSlider.value = PlayerPrefs.GetFloat("GameVolume", 1f);
         Fullscreen.isOn = Screen.fullScreen;
         VSync.isOn = QualitySettings.vSyncCount > 0;
-        
+
         ApplyVolume(VolumeSlider.value);
-        
+
         // Adiciona listeners aos controles
         VolumeSlider.onValueChanged.AddListener(ApplyVolume);
         Fullscreen.onValueChanged.AddListener(SetFullscreen);
         VSync.onValueChanged.AddListener(SetVSync);
-        
-        // Carrega o high score do SaveManager
-        saveManager.LoadData();
-       //highScoreText.text = "High Score: " + saveManager.GetHighScore.ToString() + " Kills";
-       SoundManager.Instance.PlaySoundEffect(SoundEffects.MenuBackgroundSound);
 
+        // Carrega o high score do SaveManager
+        SaveManager.Instance.LoadData();
+        UpdateHighScoreUI();
+        //highScoreText.text = "High Score: " + saveManager.GetHighScore.ToString() + " Kills";
+        SoundManager.Instance.PlaySoundEffect(SoundEffects.MenuBackgroundSound);
+    }
+
+    private void UpdateHighScoreUI()
+    {
+        SaveManager.SaveData data = SaveManager.Instance.GetData();
+        if (data != null && !string.IsNullOrEmpty(data.playerName))
+        {
+            highScoreText.text =
+                $"High Score:\n" +
+                $"Player: {data.playerName}\n" +
+                $"Kills: {data.highScoreKills}\n" +
+                $"Time: {data.bestTime:0.0}s";
+        }
+        else
+        {
+            highScoreText.text = "High Score:\nNo records yet!";
+        }
     }
 
     public void PlayGame()
@@ -48,6 +63,7 @@ public class MainMenu : MonoBehaviour
         MainMenuUI.SetActive(false);
         SettingsUI.SetActive(true);
     }
+
     public void ShowMainMenu()
     {
         SettingsUI.SetActive(false);
@@ -57,18 +73,23 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
-    
+
     //Painel de Configurações
     public void ApplyVolume(float volume)
     {
         AudioListener.volume = volume;
         PlayerPrefs.SetFloat("GameVolume", volume);
     }
+
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
     }
+
     public void SetVSync(bool isVSync)
     {
         QualitySettings.vSyncCount = isVSync ? 1 : 0;

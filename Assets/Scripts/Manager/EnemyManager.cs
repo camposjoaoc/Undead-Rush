@@ -96,7 +96,7 @@ public class EnemyManager : MonoBehaviour
     /// Spawn de um inimigo novo.
     public void SpawnEnemy()
     {
-        if (player == null) return;
+        if (enemyPrefabs.Length == 0) return;
 
         //Calcula posição de spawn aleatória em volta do player
         Vector2 spawnPos = (Vector2)player.position + UnityEngine.Random.insideUnitCircle.normalized * spawnRadius;
@@ -119,7 +119,7 @@ public class EnemyManager : MonoBehaviour
     /// Escolhe qual prefab spawnar baseado em kills.
     GameObject ChooseEnemyPrefab()
     {
-        int unlocked = 3; // sempre começa com 3 tipo liberado
+        int unlocked = Mathf.Min(5, enemyPrefabs.Length);
 
         for (int i = 0; i < killThresholds.Length; i++)
         {
@@ -152,7 +152,7 @@ public class EnemyManager : MonoBehaviour
         // Acelera spawn a cada 25 kills
         if (killCount % 25 == 0 && spawnInterval > 0.5f)
         {
-            spawnInterval -= 0.2f;
+            spawnInterval = Mathf.Max(0.5f, spawnInterval - 0.2f);
             Debug.Log("[EnemyManager] Spawn interval acelerated: " + spawnInterval);
         }
     }
