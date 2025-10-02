@@ -46,7 +46,8 @@ public class Enemy : Damageable
 
         animator?.SetBool("isDead", true);
         SoundManager.Instance.PlaySoundEffect(SoundEffects.EnemyDeath);
-        Destroy(gameObject, 1.1f);
+        //Destroy(gameObject, 1.1f);
+        gameObject.SetActive(false); // Desativa em vez de destruir
         GamesManager.Instance.AddExperience(1);
     }
 
