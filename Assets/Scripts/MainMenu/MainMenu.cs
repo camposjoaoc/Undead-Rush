@@ -13,7 +13,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Toggle VSync;
 
     [SerializeField] SaveManager saveManager; // Referência ao SaveManager
-    [SerializeField] TextMeshProUGUI highScoreText; // Referência ao texto de high score
+    [Header("High Score UI")]
+    [SerializeField] private TextMeshProUGUI highScorePlayerText;
+    [SerializeField] private TextMeshProUGUI highScoreKillsText;
+    [SerializeField] private TextMeshProUGUI highScoreTimeText;
 
     private void Start()
     {
@@ -41,15 +44,17 @@ public class MainMenu : MonoBehaviour
         SaveManager.SaveData data = SaveManager.Instance.GetData();
         if (data != null && !string.IsNullOrEmpty(data.playerName))
         {
-            highScoreText.text =
-                $"High Score:\n" +
-                $"Player: {data.playerName}\n" +
-                $"Kills: {data.highScoreKills}\n" +
-                $"Time: {data.bestTime:0.0}s";
+            highScorePlayerText.text = $"Player: {data.playerName}";
+            highScoreKillsText.text = $"Kills: {data.highScoreKills}";
+            int minutes = Mathf.FloorToInt(data.bestTime / 60f);
+            int seconds = Mathf.FloorToInt(data.bestTime % 60f);
+            highScoreTimeText.text = $"Best Time: {minutes}m {seconds}s";
         }
         else
         {
-            highScoreText.text = "High Score:\nNo records yet!";
+            highScorePlayerText.text = "Player: -";
+            highScoreKillsText.text = "Kills: -";
+            highScoreTimeText.text = "Time: -";
         }
     }
 

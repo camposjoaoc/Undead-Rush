@@ -13,7 +13,9 @@ public class EnemyManager : MonoBehaviour
     
     [SerializeField] private KillCounterUI killUI; //Referência à UI de kills
 
-    [SerializeField] private float spawnInterval = 2f; //Intervalo de spawn em segundos
+    [SerializeField] private int enemiesPerSpawn = 1;
+    [SerializeField] private int killsToIncreaseSpawn = 50;
+    [SerializeField] private float spawnInterval = 1f; //Intervalo de spawn em segundos
     [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
     [SerializeField] private int killCount = 0; //Contador de kills
     public int KillCount => killCount; //Propriedade pública para acessar kills
@@ -88,7 +90,10 @@ public class EnemyManager : MonoBehaviour
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
-            SpawnEnemy();
+            for (int i = 0; i < enemiesPerSpawn; i++)
+            {
+                SpawnEnemy();
+            }
             timer = spawnInterval;
         }
     }
@@ -154,6 +159,13 @@ public class EnemyManager : MonoBehaviour
         {
             spawnInterval = Mathf.Max(0.5f, spawnInterval - 0.2f);
             Debug.Log("[EnemyManager] Spawn interval acelerated: " + spawnInterval);
+        }
+        
+        // Aumenta quantidade por ciclo a cada X kills
+        if (killCount % killsToIncreaseSpawn == 0)
+        {
+            enemiesPerSpawn++;
+            Debug.Log("[EnemyManager] Enemies per spawn increased: " + enemiesPerSpawn);
         }
     }
 }

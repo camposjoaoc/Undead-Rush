@@ -16,7 +16,7 @@ public class Player : Damageable
     [Header("Armas Secundárias")] 
     [SerializeField] private GameObject shovelPrefab; // Prefab da pá
     private List<Shovel> activeShovels = new List<Shovel>();
-    private int maxShovels = 4;
+    private int maxShovels = 6;
     
     [SerializeField] private GameObject tridentWeaponPrefab; // Prefab do tridente
     private TridentWeapon tridentWeapon;
