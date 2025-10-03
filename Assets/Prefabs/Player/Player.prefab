@@ -170,6 +170,7 @@ MonoBehaviour:
   HandLeft: {fileID: 1304277583327520248}
   startingWeaponPrefab: {fileID: 3036066154384277279, guid: 768ee7ba29a508f44971dc2a0ec16872, type: 3}
   shovelPrefab: {fileID: 3478862210927427736, guid: 42c64f9cfe46ce641a60adad3eff7eb4, type: 3}
+  tridentWeaponPrefab: {fileID: 3558625677381852028, guid: fea0466ceee44534a84ff8bfbf07268f, type: 3}
   HealthBar: {fileID: 0}
   HealthText: {fileID: 0}
   moveSpeed: 3
