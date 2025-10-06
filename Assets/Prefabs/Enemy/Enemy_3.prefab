@@ -114,9 +114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f589e6b569ec2447917789d1ba365a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SentinelEnemy
-  maxHealth: 10
+  maxHealth: 15
   hitEffect: {fileID: 966932022925267194, guid: b57dc5f5402eacb4bbc0b198ccfa96ea, type: 3}
   isDead: 0
-  moveSpeed: 3
+  moveSpeed: 2.8
   detectionRange: 5
   chargeSpeed: 3

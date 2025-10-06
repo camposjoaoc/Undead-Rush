@@ -40,7 +40,6 @@ public class SaveManager : MonoBehaviour
             currentData.highScoreKills = kills;
             currentData.bestTime = time;
         }
-
         Save();
     }
 
