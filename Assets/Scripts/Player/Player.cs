@@ -6,23 +6,23 @@ using UnityEngine.UI;
 
 public class Player : Damageable
 {
-    [Header("Referências")] 
-    [SerializeField] Transform playerModel;
+    [Header("Referências")] [SerializeField]
+    Transform playerModel;
 
     [SerializeField] private Transform HandRight;
     [SerializeField] private Transform HandLeft;
     [SerializeField] private GameObject startingWeaponPrefab;
-    
-    [Header("Armas Secundárias")] 
-    [SerializeField] private GameObject shovelPrefab; // Prefab da pá
+
+    [Header("Armas Secundárias")] [SerializeField]
+    private GameObject shovelPrefab; // Prefab da pá
+
     private List<Shovel> activeShovels = new List<Shovel>();
     private int maxShovels = 6;
-    
+
     [SerializeField] private GameObject tridentWeaponPrefab; // Prefab do tridente
     private TridentWeapon tridentWeapon;
-    
-    [Header("PlayerUI")] 
-    [SerializeField] Image HealthBar;
+
+    [Header("PlayerUI")] [SerializeField] Image HealthBar;
     [SerializeField] TextMeshProUGUI HealthText;
 
     [Header("Movimento")] [SerializeField] float moveSpeed = 3f;
@@ -45,7 +45,6 @@ public class Player : Damageable
         currentWeapon = weaponInstance.GetComponent<Weapon>();
         currentWeapon.transform.localPosition = Vector3.zero;
     }
-
 
     public void UpdatePlayer()
     {
@@ -134,9 +133,9 @@ public class Player : Damageable
         isDead = true;
         animator.SetBool("isDead", true);
         Debug.Log("[Player] Player morreu!");
-        
+
         SoundManager.Instance.PlaySoundEffect(SoundEffects.PlayerDeath);
-        
+
         UpdateHealthUI();
         GamesManager.Instance.SwitchState(GamesManager.GameState.GameOver);
     }
@@ -167,14 +166,14 @@ public class Player : Damageable
         GameObject shovelWeapon = Instantiate(shovelPrefab, transform.position, Quaternion.identity);
         Shovel shovel = shovelWeapon.GetComponent<Shovel>();
         activeShovels.Add(shovel);
-        
+
         float angleStep = 360f / activeShovels.Count;
         for (int i = 0; i < activeShovels.Count; i++)
         {
             activeShovels[i].Initialize(transform, i * angleStep);
         }
     }
-    
+
     public void UnlockTertiaryWeapon()
     {
         if (tridentWeapon == null)
