@@ -9,14 +9,15 @@ public class EnemyManager : MonoBehaviour
     [Header("Spawn Settings")] [SerializeField]
     private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
 
-    [SerializeField] private int[] killThresholds = { 20, 30, 40, 50 }; //Thresholds de kills para dificuldade
+    [SerializeField] private int[] killThresholds = { 40, 60, 80, 100 }; //Thresholds de kills para dificuldade
     private List<Enemy> enemyPool = new List<Enemy>();
-    [SerializeField] private int poolSize = 20; // tamanho inicial do pool
+    [SerializeField] private int poolSize = 100; // tamanho inicial do pool
+    [SerializeField] private int maxActiveEnemies = 90; // limite total de inimigos simultâneos
 
     [SerializeField] private KillCounterUI killUI; //Referência à UI de kills
-    [SerializeField] private int enemiesPerSpawn = 1;
+    [SerializeField] private int enemiesPerSpawn = 2;
     [SerializeField] private int killsToIncreaseSpawn = 50;
-    [SerializeField] private float spawnInterval = 1f; //Intervalo de spawn em segundos
+    [SerializeField] private float spawnInterval = 0.4f; //Intervalo de spawn em segundos
     [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
     [SerializeField] private int killCount = 0; //Contador de kills
     public int KillCount => killCount; //Propriedade pública para acessar kills
@@ -68,8 +69,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
-
+    
     public void UpdateEnemyManager()
     {
         //Atualiza inimigos e controla spawn
@@ -108,8 +108,15 @@ public class EnemyManager : MonoBehaviour
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
+            if (activeEnemies.Count >= maxActiveEnemies)
+            {
+                timer = spawnInterval;
+                return;
+            }
+
             for (int i = 0; i < enemiesPerSpawn; i++)
             {
+                if (activeEnemies.Count >= maxActiveEnemies) break; // garante o limite
                 SpawnEnemy();
             }
 
@@ -211,8 +218,8 @@ public class EnemyManager : MonoBehaviour
             killUI.UpdateKillCount(killCount);
         }
 
-        // Acelera spawn a cada 25 kills
-        if (killCount % 25 == 0 && spawnInterval > 0.5f)
+        // Acelera spawn a cada 80 kills
+        if (killCount % 80 == 0 && spawnInterval > 0.5f)
         {
             spawnInterval = Mathf.Max(0.5f, spawnInterval - 0.2f);
             Debug.Log("[EnemyManager] Spawn interval acelerated: " + spawnInterval);

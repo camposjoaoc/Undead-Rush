@@ -163,7 +163,7 @@ MonoBehaviour:
   maxHealth: 3
   hitEffect: {fileID: 966932022925267194, guid: b57dc5f5402eacb4bbc0b198ccfa96ea, type: 3}
   isDead: 0
-  moveSpeed: 3
+  moveSpeed: 2.2
 --- !u!50 &-2571148767658997712
 Rigidbody2D:
   serializedVersion: 5

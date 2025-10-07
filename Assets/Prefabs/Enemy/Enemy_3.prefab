@@ -117,6 +117,6 @@ MonoBehaviour:
   maxHealth: 15
   hitEffect: {fileID: 966932022925267194, guid: b57dc5f5402eacb4bbc0b198ccfa96ea, type: 3}
   isDead: 0
-  moveSpeed: 2.8
-  detectionRange: 5
-  chargeSpeed: 3
+  moveSpeed: 2
+  detectionRange: 3
+  chargeSpeed: 2.5

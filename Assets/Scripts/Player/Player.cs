@@ -17,10 +17,11 @@ public class Player : Damageable
     private GameObject shovelPrefab; // Prefab da pá
 
     private List<Shovel> activeShovels = new List<Shovel>();
-    private int maxShovels = 6;
+    private int maxShovels = 8;
 
     [SerializeField] private GameObject tridentWeaponPrefab; // Prefab do tridente
     private TridentWeapon tridentWeapon;
+    public bool HasTrident => tridentWeapon != null;
 
     [Header("PlayerUI")] [SerializeField] Image HealthBar;
     [SerializeField] TextMeshProUGUI HealthText;
@@ -147,7 +148,7 @@ public class Player : Damageable
         animator.SetBool("isDead", false);
         Debug.Log("[Player] Player reviveu!");
     }
-
+    
     // Upgrades
     public void IncreaseMaxHealth(float amount)
     {
@@ -182,4 +183,8 @@ public class Player : Damageable
             tridentWeapon = tridentInstance.GetComponent<TridentWeapon>();
         }
     }
+    
+    public int CurrentShovelCount => activeShovels.Count;
+    public int MaxShovels => maxShovels;
+    
 }
