@@ -23,7 +23,8 @@ public class Player : Damageable
     private TridentWeapon tridentWeapon;
     public bool HasTrident => tridentWeapon != null;
 
-    [Header("PlayerUI")] [SerializeField] Image HealthBar;
+    [Header("PlayerUI")] 
+    [SerializeField] Image HealthBar;
     [SerializeField] TextMeshProUGUI HealthText;
 
     [Header("Movimento")] [SerializeField] float moveSpeed = 3f;

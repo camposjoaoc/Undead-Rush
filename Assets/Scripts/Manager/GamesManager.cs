@@ -130,6 +130,9 @@ public class GamesManager : MonoBehaviour
                 gameOverUI.SetActive(false);
             }
         }
+        //controla animações de pausa
+        bool shouldPauseAnims = (currentGameState == GameState.Paused || currentGameState == GameState.Upgrade);
+        SetAnimatorsPaused(shouldPauseAnims);
     }
 
     private void ShowGameOver()
@@ -216,5 +219,24 @@ public class GamesManager : MonoBehaviour
     public void PlayAgain()
     {
         SceneManager.LoadScene("GameScene");
+    }
+    
+    private void SetAnimatorsPaused(bool paused)
+    {
+        float speed = paused ? 0f : 1f;
+
+        // pausa o player
+        if (player != null)
+        {
+            Animator playerAnim = player.GetComponentInChildren<Animator>();
+            if (playerAnim != null) playerAnim.speed = speed;
+        }
+
+        // pausa inimigos
+        foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
+        {
+            Animator enemyAnim = enemy.GetComponentInChildren<Animator>();
+            if (enemyAnim != null) enemyAnim.speed = speed;
+        }
     }
 }

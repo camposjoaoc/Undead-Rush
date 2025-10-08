@@ -3,7 +3,7 @@ using System;
 
 public abstract class Damageable : MonoBehaviour
 {
-    [SerializeField] protected float maxHealth = 10f;
+    [SerializeField] protected float maxHealth = 30f;
     [SerializeField] private ParticleSystem hitEffect;
     protected float currentHealth;
     public bool isDead = false;
