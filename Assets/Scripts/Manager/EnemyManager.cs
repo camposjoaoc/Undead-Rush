@@ -6,20 +6,23 @@ public class EnemyManager : MonoBehaviour
 {
     public static EnemyManager Instance; //Singleton simples para registro de kills
 
-    [Header("Spawn Settings")] [SerializeField]
-    private GameObject[] enemyPrefabs; //Array de prefabs de inimigos
-
-    [SerializeField] private int[] killThresholds = { 40, 60, 80, 100 }; //Thresholds de kills para dificuldade
+    [Header("Spawn Settings")] 
+    [SerializeField] private GameObject[] enemyPrefabs; 
+ 
+    [SerializeField] private int[] killThresholds = { 40, 60, 80, 100 };
+  
     private List<Enemy> enemyPool = new List<Enemy>();
     [SerializeField] private int poolSize = 100; // tamanho inicial do pool
     [SerializeField] private int maxActiveEnemies = 90; // limite total de inimigos simultâneos
-
-    [SerializeField] private KillCounterUI killUI; //Referência à UI de kills
+    
     [SerializeField] private int enemiesPerSpawn = 2;
     [SerializeField] private int killsToIncreaseSpawn = 50;
+    
     [SerializeField] private float spawnInterval = 0.4f; //Intervalo de spawn em segundos
-    [SerializeField] private float spawnRadius = 8f; //Raio de spawn em unidades
-    [SerializeField] private int killCount = 0; //Contador de kills
+    [SerializeField] private float spawnRadius = 8f; 
+
+    [SerializeField] private KillCounterUI killUI;
+    [SerializeField] private int killCount = 0;
     public int KillCount => killCount; //Propriedade pública para acessar kills
 
     private List<Enemy> activeEnemies = new List<Enemy>(); //Lista de inimigos ativos
@@ -41,21 +44,9 @@ public class EnemyManager : MonoBehaviour
 
     void Start()
     {
-        /*
-        //Busca o player na cena
-        Player playerRef = FindAnyObjectByType<Player>();
-        if (playerRef != null)
-        {
-            player = playerRef.transform;
-        }
-        else
-        {
-            Debug.LogWarning("[EnemyManager] Player not found in scene!");
-        }
-        */
-
         // Inicializa pool
         Player playerRef = FindAnyObjectByType<Player>();
+        
         if (playerRef != null) player = playerRef.transform;
 
         foreach (GameObject prefab in enemyPrefabs)
@@ -127,26 +118,6 @@ public class EnemyManager : MonoBehaviour
     /// Spawn de um inimigo novo.
     public void SpawnEnemy()
     {
-        /*
-        if (enemyPrefabs.Length == 0) return;
-
-        //Calcula posição de spawn aleatória em volta do player
-        Vector2 spawnPos = (Vector2)player.position + UnityEngine.Random.insideUnitCircle.normalized * spawnRadius;
-
-        GameObject prefab = ChooseEnemyPrefab();
-        GameObject enemyObj = Instantiate(prefab, spawnPos, Quaternion.identity);
-
-        Enemy enemy = enemyObj.GetComponent<Enemy>();
-        if (enemy != null)
-        {
-            enemy.Initialize(player); //Inicializa o inimigo com referência ao player
-            activeEnemies.Add(enemy); //Adiciona à lista de inimigos ativos
-        }
-        else
-        {
-            Debug.LogWarning("[EnemyManager] Spawned object does not have an Enemy component!");
-        }
-        */
         // Tenta reaproveitar inimigo morto
         if (player == null) return;
 

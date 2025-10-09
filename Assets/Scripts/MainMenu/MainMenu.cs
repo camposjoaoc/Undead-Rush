@@ -35,7 +35,6 @@ public class MainMenu : MonoBehaviour
         // Carrega o high score do SaveManager
         SaveManager.Instance.LoadData();
         UpdateHighScoreUI();
-        //highScoreText.text = "High Score: " + saveManager.GetHighScore.ToString() + " Kills";
         SoundManager.Instance.PlaySoundEffect(SoundEffects.MenuBackgroundSound);
     }
 
@@ -78,9 +77,9 @@ public class MainMenu : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#endif
+    #endif
     }
 
     //Painel de Configurações

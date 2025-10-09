@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,9 +9,19 @@ public class Enemy : Damageable
     protected Animator animator; // Controla animações (Idle, Run, Hit, Dead)
     protected SpriteRenderer spriteRenderer; // Responsável por flipar o sprite esquerda/direita
 
-    private float attackCooldown = 1f; // Tempo entre ataques
-    private float lastAttackTime = 0f; // Tempo do último ataque
+    private static readonly int IsDeadHash = Animator.StringToHash("isDead");
+    
+    private float attackCooldown = 1f; 
+    private float lastAttackTime = 0f; 
 
+    private Coroutine deathRoutine;
+    private bool _pendingAnimatorReset; 
+    protected new void Awake()
+    {
+        base.Awake(); 
+        animator = GetComponentInChildren<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+    }
     /// Inicializa o inimigo quando for spawnado pelo EnemyManager.
     public void Initialize(Transform target)
     {
@@ -18,10 +29,37 @@ public class Enemy : Damageable
         currentHealth = maxHealth;
         isDead = false;
 
-        animator = GetComponentInChildren<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
+        StopDeathRoutineIfAny();
 
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.SetBool(IsDeadHash, false);
+
+            // se já estiver ativo, podemos atualizar agora; caso contrário, adia
+            if (gameObject.activeInHierarchy && animator.isActiveAndEnabled)
+            {
+                animator.Update(0f);
+                animator.speed = 1f;
+                _pendingAnimatorReset = false;
+            }
+            else
+            {
+                _pendingAnimatorReset = true;
+            }
+        }
+    }
+    private void OnEnable()
+    {
+        // completa o reset se Initialize foi chamado com GO inativo
+        if (_pendingAnimatorReset && animator != null && animator.isActiveAndEnabled)
+        {
+            animator.Update(0f);
+            animator.speed = 1f;
+            _pendingAnimatorReset = false;
+        }
+    }
+    
     /// Atualiza o movimento do inimigo (chamado pelo Manager a cada frame).
     public virtual void UpdateEnemy()
     {
@@ -44,11 +82,40 @@ public class Enemy : Damageable
         if (isDead) return;
         isDead = true;
 
-        animator?.SetBool("isDead", true);
+        if (animator != null)
+            animator.SetBool(IsDeadHash, true);
+
         SoundManager.Instance.PlaySoundEffect(SoundEffects.EnemyDeath);
-        //Destroy(gameObject, 1.1f);
-        gameObject.SetActive(false); // Desativa em vez de destruir
         GamesManager.Instance.AddExperience(1);
+
+        StopDeathRoutineIfAny();
+        deathRoutine = StartCoroutine(DisableAfterAnimation());
+    }
+
+    private IEnumerator DisableAfterAnimation()
+    {
+        // ajuste para o comprimento real do seu clip "Enemy_Death"
+        yield return new WaitForSeconds(1f);
+
+        if (gameObject.activeSelf)
+            gameObject.SetActive(false);
+
+        deathRoutine = null;
+    }
+
+    private void OnDisable()
+    {
+        // garante que nenhuma rotina de morte fique viva ao desativar (pool/scene change)
+        StopDeathRoutineIfAny();
+    }
+
+    private void StopDeathRoutineIfAny()
+    {
+        if (deathRoutine != null)
+        {
+            StopCoroutine(deathRoutine);
+            deathRoutine = null;
+        }
     }
 
     /// Detecta colisão com o Player para causar dano.

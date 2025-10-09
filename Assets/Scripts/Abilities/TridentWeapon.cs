@@ -4,7 +4,7 @@ using UnityEngine;
 public class TridentWeapon : MonoBehaviour
 {
     [SerializeField] private GameObject tridentProjectilePrefab; // Prefab do projétil
-    [SerializeField] private float cooldown = 10f; // Tempo de recarga entre os disparos 10s
+    [SerializeField] private float cooldown = 5f; // Tempo de recarga entre os disparos 10s
     [SerializeField] private float projectileSpeed = 8f; // Velocidade do projétil
 
     private float timer;
