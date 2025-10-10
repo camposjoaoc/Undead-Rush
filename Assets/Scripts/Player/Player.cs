@@ -6,20 +6,20 @@ using UnityEngine.UI;
 
 public class Player : Damageable
 {
-    [Header("Referências")] [SerializeField]
+    [Header("References")] [SerializeField]
     Transform playerModel;
 
     [SerializeField] private Transform HandRight;
     [SerializeField] private Transform HandLeft;
     [SerializeField] private GameObject startingWeaponPrefab;
 
-    [Header("Armas Secundárias")] [SerializeField]
-    private GameObject shovelPrefab; // Prefab da pá
+    [Header("Secondary Weapons")] [SerializeField]
+    private GameObject shovelPrefab;
 
     private List<Shovel> activeShovels = new List<Shovel>();
     private int maxShovels = 8;
 
-    [SerializeField] private GameObject tridentWeaponPrefab; // Prefab do tridente
+    [SerializeField] private GameObject tridentWeaponPrefab;
     private TridentWeapon tridentWeapon;
     public bool HasTrident => tridentWeapon != null;
 
@@ -35,14 +35,14 @@ public class Player : Damageable
 
     protected override void Awake()
     {
-        base.Awake(); // inicializa currentHealth = maxHealth (Damageable)
+        base.Awake(); // Initialize currentHealth = maxHealth (Damageable)
         animator = playerModel.GetComponent<Animator>();
         spriteRenderer = playerModel.GetComponent<SpriteRenderer>();
     }
 
     void Start()
     {
-        // instancia a arma inicial na mão direita
+        // Instantiate initial weapon at right hand
         GameObject weaponInstance = Instantiate(startingWeaponPrefab, HandRight);
         currentWeapon = weaponInstance.GetComponent<Weapon>();
         currentWeapon.transform.localPosition = Vector3.zero;
@@ -58,20 +58,20 @@ public class Player : Damageable
 
     private void UpdateHealthUI()
     {
-        // atualiza barra de vida
+        // Update HealthBar
         HealthText.text = currentHealth.ToString("F0") + " / " + maxHealth.ToString();
         HealthBar.fillAmount = currentHealth / maxHealth;
     }
 
     private void HandleMovementAndAnimation()
     {
-        // movimento com WASD
+        // Movement with WASD
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
         Vector3 movement = new Vector3(x, y, 0f);
         transform.position += movement.normalized * (moveSpeed * Time.deltaTime);
 
-        // animação de idle/run
+        // idle/run animation
         float speed = movement.sqrMagnitude;
         animator.SetFloat("Speed", speed);
     }
@@ -84,25 +84,25 @@ public class Player : Damageable
 
     private void HandleAiming()
     {
-        // posição do mouse
+        // Mouse position
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
-        // direção entre player e mouse
+        // Direction between player and mouse
         Vector3 aimDir = (mousePos - transform.position).normalized;
         bool lookingLeft = (mousePos.x < transform.position.x);
         spriteRenderer.flipX = lookingLeft;
 
         if (currentWeapon == null) return;
 
-        // troca de mão
+        // Switch hand
         currentWeapon.transform.SetParent(lookingLeft ? HandLeft : HandRight, false);
         currentWeapon.transform.localPosition = Vector3.zero;
 
-        // rotação da arma
+        // Weapon rotation
         currentWeapon.transform.right = aimDir;
-
-        // corrige flip vertical da arma quando player olha pra esquerda
+        
+        // Fix weapon vertical flip when player look left
         Vector3 localScale = currentWeapon.transform.localScale;
         localScale.y = lookingLeft ? -1 : 1;
         currentWeapon.transform.localScale = localScale;
@@ -115,7 +115,7 @@ public class Player : Damageable
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
 
-        // tiro
+        // Shoot
         if (Input.GetMouseButtonDown(0))
         {
             currentWeapon.Shoot(mousePos);
@@ -134,7 +134,7 @@ public class Player : Damageable
         currentHealth = 0;
         isDead = true;
         animator.SetBool("isDead", true);
-        Debug.Log("[Player] Player morreu!");
+        Debug.Log("[Player] Player died!");
 
         SoundManager.Instance.PlaySoundEffect(SoundEffects.PlayerDeath);
 
@@ -147,7 +147,7 @@ public class Player : Damageable
         currentHealth = maxHealth;
         isDead = false;
         animator.SetBool("isDead", false);
-        Debug.Log("[Player] Player reviveu!");
+        Debug.Log("[Player] Player undead!");
     }
     
     // Upgrades

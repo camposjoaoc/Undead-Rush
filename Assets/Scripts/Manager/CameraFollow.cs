@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class CameraFollow: MonoBehaviour
 {
-    [SerializeField] private Transform target; // alvo para a câmera seguir
-    [SerializeField] private float smoothSpeed = 5f; // velocidade de suavização
-    [SerializeField] private Vector3 offset; // offset da câmera em relação ao alvo
+    [SerializeField] private Transform target; // Camera target to follow
+    [SerializeField] private float smoothSpeed = 5f; // Smoothing speed
+    [SerializeField] private Vector3 offset; // Camera offset in relation to target
     private void LateUpdate()
     {
         if (target == null) return;
         
-        // posição desejada da câmera com offset
+        // Camera desired position with offset
         Vector3 desiredPosition = target.position + offset;
         
-        // suaviza a transição da posição da câmera
+        // Smooth transaction from camera position
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
     }

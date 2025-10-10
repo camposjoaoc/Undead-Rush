@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("UI Panels")] [SerializeField] private GameObject MainMenuUI;
+    [Header("UI Panels")] 
+    [SerializeField] private GameObject MainMenuUI;
     [SerializeField] private GameObject SettingsUI;
 
     [Header("Settings")] [SerializeField] private Slider VolumeSlider;
     [SerializeField] private Toggle Fullscreen;
     [SerializeField] private Toggle VSync;
 
-    [SerializeField] SaveManager saveManager; // Referência ao SaveManager
+    [SerializeField] SaveManager saveManager;
     [Header("High Score UI")]
     [SerializeField] private TextMeshProUGUI highScorePlayerText;
     [SerializeField] private TextMeshProUGUI highScoreKillsText;
@@ -20,19 +21,19 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        // Inicializa os controles com os valores salvos
+        // Initialize controllers with saved values 
         VolumeSlider.value = PlayerPrefs.GetFloat("GameVolume", 1f);
         Fullscreen.isOn = Screen.fullScreen;
         VSync.isOn = QualitySettings.vSyncCount > 0;
 
         ApplyVolume(VolumeSlider.value);
 
-        // Adiciona listeners aos controles
+        // Add listeners to controllers
         VolumeSlider.onValueChanged.AddListener(ApplyVolume);
         Fullscreen.onValueChanged.AddListener(SetFullscreen);
         VSync.onValueChanged.AddListener(SetVSync);
 
-        // Carrega o high score do SaveManager
+        // Load high score from SaveManager
         SaveManager.Instance.LoadData();
         UpdateHighScoreUI();
         SoundManager.Instance.PlaySoundEffect(SoundEffects.MenuBackgroundSound);
@@ -82,7 +83,7 @@ public class MainMenu : MonoBehaviour
     #endif
     }
 
-    //Painel de Configurações
+    //Config Panel
     public void ApplyVolume(float volume)
     {
         AudioListener.volume = volume;

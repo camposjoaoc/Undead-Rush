@@ -8,27 +8,27 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(Vector3 aVelocity, float aSpeed)
     {
-        Destroy(gameObject, 5.0f); // destrói projétil depois de 5s
-        transform.up = aVelocity; // orienta o sprite na direção
-        speed = aSpeed; // define a velocidade
-        velocity = aVelocity.normalized; // direção normalizada
+        Destroy(gameObject, 5.0f); // destroy projectile after 5s
+        transform.up = aVelocity; // sprite direction
+        speed = aSpeed; // defines velocity
+        velocity = aVelocity.normalized; // normalized direction
     }
 
     private void Update()
     {
-        // aplica movimento usando a velocidade armazenada
+        //apply movement using stored velocity
         transform.position += velocity * speed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // checa se acertou um inimigo
+        // check if an enemy was hit
         Enemy enemy = other.GetComponent<Enemy>();
         
         if (enemy != null)
         {
-            enemy.TakeDamage(damage); // causa dano no inimigo
-            Destroy(gameObject); // destrói o projétil
+            enemy.TakeDamage(damage); // enemy takes damage
+            Destroy(gameObject); // destroy projectile
         }
     }
 }

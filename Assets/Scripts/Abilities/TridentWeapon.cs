@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class TridentWeapon : MonoBehaviour
 {
-    [SerializeField] private GameObject tridentProjectilePrefab; // Prefab do projétil
-    [SerializeField] private float cooldown = 5f; // Tempo de recarga entre os disparos 10s
-    [SerializeField] private float projectileSpeed = 8f; // Velocidade do projétil
+    [SerializeField] private GameObject tridentProjectilePrefab; // Projectile prefab
+    [SerializeField] private float cooldown = 5f; // Cooldown between shoots (5s)
+    [SerializeField] private float projectileSpeed = 8f; // Projectile velocity
 
     private float timer;
 
@@ -26,15 +26,15 @@ public class TridentWeapon : MonoBehaviour
     {
         Player player = GetComponentInParent<Player>();
         if (player == null) return;
-
-        // Determina a direção do disparo com base na orientação do jogador
+        
+        // Determine shooting direction based on players orientation
         bool facingLeft = player.GetComponentInChildren<SpriteRenderer>().flipX;
         Vector3 fireDirection = facingLeft ? Vector3.left : Vector3.right;
-
-        // Instancia o projétil na posição do jogador
+        
+        // Instantiate projectile at players position
         GameObject ptridentObj = Instantiate(tridentProjectilePrefab, player.transform.position, Quaternion.identity);
-
-        // Inicializa o projétil com a direção e velocidade
+        
+        // Initialize projectile with direction and velocity
         Projectile tridentProjectile = ptridentObj.GetComponent<Projectile>();
         if (tridentProjectile != null)
         {
@@ -42,7 +42,7 @@ public class TridentWeapon : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Projectile component missing on trident prefab!");
+            Debug.LogWarning("[TridentWeapon] Projectile component missing on trident prefab!");
             Destroy(ptridentObj);
         }
     }

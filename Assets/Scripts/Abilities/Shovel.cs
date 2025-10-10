@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Shovel : MonoBehaviour
 {
-    [SerializeField] private float orbitRadius = 1.5f; // Raio da órbita
-    [SerializeField] private float orbitSpeed = 90f; // Graus por segundo
+    [SerializeField] private float orbitRadius = 1.5f; // Orbit radius
+    [SerializeField] private float orbitSpeed = 90f; // Grades per second
     [SerializeField] private int damage = 3;
 
     private Transform player;
@@ -23,14 +23,14 @@ public class Shovel : MonoBehaviour
         
         if (player == null) return;
         
-        // Avança o ângulo baseado na velocidade (graus convertidos para radianos)
+        // Increase angle based on velocity 
         angle += (orbitSpeed * Mathf.Deg2Rad) * Time.deltaTime;
 
-        // Nova posição no círculo
+        // New circle position
         Vector3 orbitPos = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * orbitRadius;
         transform.position = player.position + orbitPos;
-
-        // Direção tangente ao círculo
+        
+        // Tangent direction to circle
         Vector3 tangent = new Vector3(-Mathf.Sin(angle), Mathf.Cos(angle), 0);
         transform.right = -tangent; 
     }

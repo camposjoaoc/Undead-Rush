@@ -13,7 +13,7 @@ public class GamesManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            throw new Exception("There can only be one instance of GamesManager");
+            throw new Exception("[GamesManager] There can only be one instance of GamesManager");
         }
 
         Instance = this;
@@ -75,7 +75,7 @@ public class GamesManager : MonoBehaviour
         switch (currentGameState)
         {
             case GameState.Playing:
-                // Lógica do jogo em andamento atualizado managers
+                 
                 enemyManager.UpdateEnemyManager();
                 player.UpdatePlayer();
                 playTime += Time.deltaTime;
@@ -88,7 +88,6 @@ public class GamesManager : MonoBehaviour
                 break;
 
             case GameState.Paused:
-                // Lógica do jogo pausado
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     SwitchState(GameState.Playing);
@@ -97,7 +96,6 @@ public class GamesManager : MonoBehaviour
                 break;
 
             case GameState.Upgrade:
-                // Lógica do jogo em modo de upgrade
                 break;
 
             case GameState.GameOver:
@@ -130,7 +128,8 @@ public class GamesManager : MonoBehaviour
                 gameOverUI.SetActive(false);
             }
         }
-        //controla animações de pausa
+        
+        // Pause animation control
         bool shouldPauseAnims = (currentGameState == GameState.Paused || currentGameState == GameState.Upgrade);
         SetAnimatorsPaused(shouldPauseAnims);
     }
@@ -193,7 +192,7 @@ public class GamesManager : MonoBehaviour
         
         UpdateXPUI();
         
-        // Vai para o estado de upgrade
+        // Switch to Upgrade State
         SwitchState(GameState.Upgrade);
     }
 
@@ -225,14 +224,14 @@ public class GamesManager : MonoBehaviour
     {
         float speed = paused ? 0f : 1f;
 
-        // pausa o player
+        // Player animation pause
         if (player != null)
         {
             Animator playerAnim = player.GetComponentInChildren<Animator>();
             if (playerAnim != null) playerAnim.speed = speed;
         }
 
-        // pausa inimigos
+        // Enemy animation pause
         foreach (Enemy enemy in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
         {
             Animator enemyAnim = enemy.GetComponentInChildren<Animator>();

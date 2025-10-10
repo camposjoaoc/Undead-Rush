@@ -6,14 +6,14 @@ public class UpgradeManager : MonoBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private GameObject upgradeUI;
-    [SerializeField] private Button shovelButton; // botão da pá
+    [SerializeField] private Button shovelButton; 
     [SerializeField] private Button tridentButton;
     private void Update()
     {
-        // Desabilita o botão se o limite de pás foi atingido
+        // Disable button if shovel limit is reached
         if (shovelButton != null)
             shovelButton.interactable = player.CurrentShovelCount < player.MaxShovels;
-        
+        // Disable button if trident limit is reached
         if (tridentButton != null)
             tridentButton.interactable = !player.HasTrident;
     }
@@ -41,7 +41,7 @@ public class UpgradeManager : MonoBehaviour
                 break;
 
             default:
-                Debug.LogWarning("Upgrade not found: " + upgradeName);
+                Debug.LogWarning("[UpgradeManager] Upgrade not found: " + upgradeName);
                 break;
         }
         

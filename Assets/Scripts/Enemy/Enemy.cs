@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Enemy : Damageable
 {
-    [Header("Stats")] [SerializeField] private float moveSpeed = 3f; // Velocidade de movimento do inimigo
-    protected Transform playerTarget; // Referência ao Player (passada pelo Manager)
-    protected Animator animator; // Controla animações (Idle, Run, Hit, Dead)
-    protected SpriteRenderer spriteRenderer; // Responsável por flipar o sprite esquerda/direita
+    [Header("Stats")] [SerializeField] private float moveSpeed = 3f; // Enemy movement speed
+    protected Transform playerTarget; // Player reference
+    protected Animator animator; // Animation controll (Idle, Run, Hit, Dead)
+    protected SpriteRenderer spriteRenderer; // Flip sprite left/right
 
     private static readonly int IsDeadHash = Animator.StringToHash("isDead");
     
@@ -15,14 +15,15 @@ public class Enemy : Damageable
     private float lastAttackTime = 0f; 
 
     private Coroutine deathRoutine;
-    private bool _pendingAnimatorReset; 
+    private bool pendingAnimatorReset; 
     protected new void Awake()
     {
         base.Awake(); 
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
-    /// Inicializa o inimigo quando for spawnado pelo EnemyManager.
+    
+    //Initialize enemy when spawned by EnemyManager 
     public void Initialize(Transform target)
     {
         playerTarget = target;
@@ -35,32 +36,29 @@ public class Enemy : Damageable
         {
             animator.Rebind();
             animator.SetBool(IsDeadHash, false);
-
-            // se já estiver ativo, podemos atualizar agora; caso contrário, adia
+            
             if (gameObject.activeInHierarchy && animator.isActiveAndEnabled)
             {
                 animator.Update(0f);
                 animator.speed = 1f;
-                _pendingAnimatorReset = false;
+                pendingAnimatorReset = false;
             }
             else
             {
-                _pendingAnimatorReset = true;
+                pendingAnimatorReset = true;
             }
         }
     }
     private void OnEnable()
     {
-        // completa o reset se Initialize foi chamado com GO inativo
-        if (_pendingAnimatorReset && animator != null && animator.isActiveAndEnabled)
+        if (pendingAnimatorReset && animator != null && animator.isActiveAndEnabled)
         {
             animator.Update(0f);
             animator.speed = 1f;
-            _pendingAnimatorReset = false;
+            pendingAnimatorReset = false;
         }
     }
     
-    /// Atualiza o movimento do inimigo (chamado pelo Manager a cada frame).
     public virtual void UpdateEnemy()
     {
         if (isDead || playerTarget == null) return;
@@ -75,8 +73,7 @@ public class Enemy : Damageable
             spriteRenderer.flipX = toPlayer.x < 0;
         }
     }
-
-    /// Comportamento de morte do inimigo (sobrescreve Damageable).
+    
     protected override void Die()
     {
         if (isDead) return;
@@ -94,7 +91,6 @@ public class Enemy : Damageable
 
     private IEnumerator DisableAfterAnimation()
     {
-        // ajuste para o comprimento real do seu clip "Enemy_Death"
         yield return new WaitForSeconds(1f);
 
         if (gameObject.activeSelf)
@@ -105,7 +101,6 @@ public class Enemy : Damageable
 
     private void OnDisable()
     {
-        // garante que nenhuma rotina de morte fique viva ao desativar (pool/scene change)
         StopDeathRoutineIfAny();
     }
 
@@ -117,8 +112,8 @@ public class Enemy : Damageable
             deathRoutine = null;
         }
     }
-
-    /// Detecta colisão com o Player para causar dano.
+    
+    // Detect collision with Player to cause damage
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (isDead) return;

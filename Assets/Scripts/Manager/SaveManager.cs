@@ -38,7 +38,7 @@ public class SaveManager : MonoBehaviour
     {
         if (currentData == null) currentData = new SaveData();
 
-        // adiciona o score atual
+        // Add current score
         currentData.allScores.Add(new ScoreEntry
         {
             playerName = playerName,
@@ -46,7 +46,7 @@ public class SaveManager : MonoBehaviour
             time = time
         });
 
-        // atualiza o recorde se for maior
+        // Update score if higher
         if (kills > currentData.highScoreKills)
         {
             currentData.playerName = playerName;

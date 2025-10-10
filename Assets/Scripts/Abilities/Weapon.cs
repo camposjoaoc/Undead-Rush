@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-   [SerializeField] private GameObject projectilePrefab; // Prefab do projétil
-   [SerializeField] private Transform firePoint; // Ponto de onde o projétil é disparado
-   [SerializeField] private float projectileSpeed = 8f; // Velocidade do projétil
+   [SerializeField] private GameObject projectilePrefab;
+   [SerializeField] private Transform firePoint; // Spot where projectile is shot
+   [SerializeField] private float projectileSpeed = 8f; // Projectile velocity
 
    public void Shoot(Vector3 targetPosition)
    {
@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour
       }
       else
       {
-         Debug.LogWarning("Projectile component missing on prefab!");
+         Debug.LogWarning("[Weapon] Projectile component missing on prefab!");
          Destroy(bullet);
       }
    }

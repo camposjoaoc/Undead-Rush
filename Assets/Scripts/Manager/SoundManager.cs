@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Enum para identificar diferentes efeitos sonoros
+// Enum for identity differents sounds effects
 public enum SoundEffects
 {
     EnemyDeath,
@@ -20,8 +20,7 @@ public struct SoundInstance
 {
     public SoundEffects Effects;
     [SerializeField] AudioSource source;
-
-    // Toca o som associado a este SoundInstance
+    
     public void PlaySound()
     {
         source.Play();
@@ -50,11 +49,11 @@ public class SoundManager : MonoBehaviour
     }
 
     #endregion
-
-    // Lista de instâncias de sons configuradas no Inspector
+    
+    // Sound Instance List
     [SerializeField] List<SoundInstance> soundInstances = new();
-
-    // Toca o efeito sonoro correspondente ao enum passado
+    
+    // Plays sound effect accoring to enum
     public void PlaySoundEffect(SoundEffects anEffect)
     {
         for (int i = 0; i < soundInstances.Count; i++)

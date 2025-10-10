@@ -3,12 +3,10 @@ using TMPro;
 
 public class KillCounterUI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI killText; // Referência ao componente de texto para exibir as kills
+    [SerializeField] private TextMeshProUGUI killText; // Reference to text component for kill count
     private int currentKills = 0;
-
-    /// <summary>
-    /// Atualiza o contador de kills na UI.
-    /// </summary>
+    
+    // Update kill count UI
     public void UpdateKillCount(int kills)
     {
         currentKills = kills;

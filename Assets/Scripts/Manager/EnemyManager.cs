@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    public static EnemyManager Instance; //Singleton simples para registro de kills
+    public static EnemyManager Instance; //Singleton for kill registry
 
     [Header("Spawn Settings")] 
     [SerializeField] private GameObject[] enemyPrefabs; 
@@ -12,26 +12,26 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private int[] killThresholds = { 40, 60, 80, 100 };
   
     private List<Enemy> enemyPool = new List<Enemy>();
-    [SerializeField] private int poolSize = 100; // tamanho inicial do pool
-    [SerializeField] private int maxActiveEnemies = 90; // limite total de inimigos simultâneos
+    [SerializeField] private int poolSize = 150; // Pool initial size
+    [SerializeField] private int maxActiveEnemies = 90; // Max enemies at same time
     
     [SerializeField] private int enemiesPerSpawn = 2;
-    [SerializeField] private int killsToIncreaseSpawn = 50;
+    [SerializeField] private int killsToIncreaseSpawn = 75;
     
-    [SerializeField] private float spawnInterval = 0.4f; //Intervalo de spawn em segundos
+    [SerializeField] private float spawnInterval = 0.4f; // Spawn interval in seconds
     [SerializeField] private float spawnRadius = 8f; 
 
     [SerializeField] private KillCounterUI killUI;
     [SerializeField] private int killCount = 0;
-    public int KillCount => killCount; //Propriedade pública para acessar kills
+    public int KillCount => killCount; // Public Kill count
 
-    private List<Enemy> activeEnemies = new List<Enemy>(); //Lista de inimigos ativos
+    private List<Enemy> activeEnemies = new List<Enemy>(); // Active enemies list
     private Transform player;
     private float timer;
 
     void Awake()
     {
-        //Define Singleton
+        //Singleton definition
         if (Instance == null)
         {
             Instance = this;
@@ -44,7 +44,7 @@ public class EnemyManager : MonoBehaviour
 
     void Start()
     {
-        // Inicializa pool
+        // Initialize pool
         Player playerRef = FindAnyObjectByType<Player>();
         
         if (playerRef != null) player = playerRef.transform;
@@ -54,7 +54,7 @@ public class EnemyManager : MonoBehaviour
             for (int i = 0; i < poolSize; i++)
             {
                 GameObject obj = Instantiate(prefab, transform);
-                obj.SetActive(false); // começa desativado
+                obj.SetActive(false); // Start inactive
                 Enemy enemy = obj.GetComponent<Enemy>();
                 if (enemy != null) enemyPool.Add(enemy);
             }
@@ -63,25 +63,24 @@ public class EnemyManager : MonoBehaviour
     
     public void UpdateEnemyManager()
     {
-        //Atualiza inimigos e controla spawn
+        // Update enemies and control spawn
         UpdateEnemies();
         HandleSpawning();
     }
-
-    /// Atualiza todos os inimigos ativos e remove os mortos.
+    
+    // Update all active enemies and remove dead ones
     public void UpdateEnemies()
     {
-        // Percorre a lista de inimigos de trás pra frente para permitir remoção segura
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
         {
-            // Pega o inimigo atual
+            // Get current enemy
             Enemy enemy = activeEnemies[i];
 
-            if (enemy != null && !enemy.isDead) // inimigo está vivo
+            if (enemy != null && !enemy.isDead)
             {
-                enemy.UpdateEnemy(); // atualiza movimento/flip
+                enemy.UpdateEnemy();
             }
-            else if (enemy != null && enemy.isDead) // inimigo morreu
+            else if (enemy != null && enemy.isDead)
             {
                 activeEnemies.RemoveAt(i);
                 RegisterKill();
@@ -92,8 +91,8 @@ public class EnemyManager : MonoBehaviour
             }
         }
     }
-
-    /// Controla o tempo entre spawns.
+    
+    // Controls time between spawns
     public void HandleSpawning()
     {
         timer -= Time.deltaTime;
@@ -107,7 +106,7 @@ public class EnemyManager : MonoBehaviour
 
             for (int i = 0; i < enemiesPerSpawn; i++)
             {
-                if (activeEnemies.Count >= maxActiveEnemies) break; // garante o limite
+                if (activeEnemies.Count >= maxActiveEnemies) break;
                 SpawnEnemy();
             }
 
@@ -115,19 +114,19 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    /// Spawn de um inimigo novo.
+   // Spawn new enemy
     public void SpawnEnemy()
     {
-        // Tenta reaproveitar inimigo morto
+        // Use dead enemy
         if (player == null) return;
-
-        // Calcula posição de spawn em volta do player
+        
+        // Calculate spawn position around player
         Vector2 spawnPos = (Vector2)player.position + UnityEngine.Random.insideUnitCircle.normalized * spawnRadius;
 
-        // Escolhe prefab (pode ser goblin, esqueleto, etc)
+        // Choose prefab 
         GameObject chosenPrefab = ChooseEnemyPrefab();
-
-        // 1. Procura inimigo desativado do tipo escolhido
+        
+        // 1 Search for chosen enemy type
         foreach (Enemy enemy in enemyPool)
         {
             if (!enemy.gameObject.activeInHierarchy && enemy.gameObject.name.Contains(chosenPrefab.name))
@@ -136,11 +135,11 @@ public class EnemyManager : MonoBehaviour
                 enemy.Initialize(player);
                 enemy.gameObject.SetActive(true);
                 activeEnemies.Add(enemy);
-                return; // reaproveitou → sai
+                return; // If it was possible to reuse dead enemy, returns
             }
         }
-
-        // 2. Se nenhum disponível no pool, instancia novo
+        
+        // 2 If no dead enemy, Instantiate a new one
         GameObject enemyObj = Instantiate(chosenPrefab, spawnPos, Quaternion.identity);
         Enemy newEnemy = enemyObj.GetComponent<Enemy>();
 
@@ -148,15 +147,15 @@ public class EnemyManager : MonoBehaviour
         {
             newEnemy.Initialize(player);
             activeEnemies.Add(newEnemy);
-            enemyPool.Add(newEnemy); // adiciona ao pool para reaproveitar
+            enemyPool.Add(newEnemy); // Add to pool for reuse
         }
         else
         {
             Debug.LogWarning("[EnemyManager] Spawned object does not have an Enemy component!");
         }
     }
-
-    /// Escolhe qual prefab spawnar baseado em kills.
+    
+    // Choose prefab to spawn based on kills
     GameObject ChooseEnemyPrefab()
     {
         int unlocked = Mathf.Min(5, enemyPrefabs.Length);
@@ -169,34 +168,33 @@ public class EnemyManager : MonoBehaviour
                 break;
             }
         }
-
-        // Se passou de todos os thresholds, libera todos
+        
         if (killCount >= killThresholds[killThresholds.Length - 1])
             unlocked = enemyPrefabs.Length;
 
         return enemyPrefabs[UnityEngine.Random.Range(0, unlocked)];
     }
-
-    //Conta um kill e pode acelerar dificuldade.
+    
+    // Kill counter and difficulty scaler
     public void RegisterKill()
     {
         killCount++;
         Debug.Log("[EnemyManager] Total Kills = " + killCount);
 
-        // Atualiza HUD
+        // Update HUD
         if (killUI != null)
         {
             killUI.UpdateKillCount(killCount);
         }
-
-        // Acelera spawn a cada 80 kills
+        
+        // Decrease spawn interval but not below 0.5 seconds
         if (killCount % 80 == 0 && spawnInterval > 0.5f)
         {
             spawnInterval = Mathf.Max(0.5f, spawnInterval - 0.2f);
-            Debug.Log("[EnemyManager] Spawn interval acelerated: " + spawnInterval);
+            Debug.Log("[EnemyManager] Spawn interval accelerated: " + spawnInterval);
         }
-
-        // Aumenta quantidade por ciclo a cada X kills
+        
+        // Increase enemies per spawn every X kills
         if (killCount % killsToIncreaseSpawn == 0)
         {
             enemiesPerSpawn++;

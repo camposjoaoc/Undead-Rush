@@ -23,7 +23,7 @@ public abstract class Damageable : MonoBehaviour
         currentHealth -= damage;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         
-        // Efeito de hit
+        // Hit Effect
         if (hitEffect != null)
         {
            Instantiate(hitEffect, transform.position, Quaternion.identity);

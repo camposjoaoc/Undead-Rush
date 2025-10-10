@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class SentinelEnemy : Enemy
 {
-    [SerializeField] private float detectionRange = 5f; // Raio de detecção do jogador
-    [SerializeField] private float chargeSpeed = 3f; // Velocidade quando ataca
+    [SerializeField] private float detectionRange = 3f; // Player detection range
+    [SerializeField] private float chargeSpeed = 2.5f; // Speed while charging
 
     private bool isCharging = false;
 
@@ -16,25 +16,24 @@ public class SentinelEnemy : Enemy
 
             if (!isCharging && distanceToPlayer <= detectionRange)
             {
-                // Entrou no alcance, começa a perseguir
+                // Start charging
                 isCharging = true;
             }
 
             if (isCharging)
             {
-                // Corre em direção ao player
+                // Run towards the player
                 Vector3 toPlayer = (playerTarget.position - transform.position).normalized;
                 transform.position += toPlayer * chargeSpeed * Time.deltaTime;
-
-                // Flip do sprite
+                
                 spriteRenderer.flipX = toPlayer.x < 0;
 
-                // Animação
+                //Animation "Run"
                 animator?.SetFloat("Speed", 1f);
             }
             else
             {
-                // Idle
+                // Animation "Idle"
                 animator?.SetFloat("Speed", 0f);
             }
         }
