@@ -66,6 +66,8 @@ public class Enemy : Damageable
         // Calcula direção até o player
         Vector3 toPlayer = (playerTarget.position - transform.position).normalized;
         transform.position += toPlayer * moveSpeed * Time.deltaTime;
+        
+        AvoidOtherEnemies(); // <- chama aqui
 
         // Animação Run/Idle + flip horizontal
         if (Mathf.Abs(toPlayer.x) > 0.01f)
@@ -124,6 +126,20 @@ public class Enemy : Damageable
             player.TakeDamage(1); // Aplica dano no player
             lastAttackTime = Time.time;
             SoundManager.Instance.PlaySoundEffect(SoundEffects.EnemyAttack);
+        }
+    }
+    
+    private void AvoidOtherEnemies()
+    {
+        float avoidRadius = 0.6f;
+        Collider2D[] others = Physics2D.OverlapCircleAll(transform.position, avoidRadius, LayerMask.GetMask("Enemy"));
+
+        foreach (var col in others)
+        {
+            if (col.gameObject == this.gameObject) continue;
+
+            Vector2 dirAway = (transform.position - col.transform.position).normalized;
+            transform.position += (Vector3)(dirAway * moveSpeed * 0.2f * Time.deltaTime); // ajuste o multiplicador conforme necessário
         }
     }
 }
