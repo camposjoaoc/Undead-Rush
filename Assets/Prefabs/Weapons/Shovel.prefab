@@ -180,4 +180,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Shovel
   orbitRadius: 1.5
   orbitSpeed: 180
-  damage: 5
+  damage: 2
